@@ -2,6 +2,7 @@ const UserModel = require("../models/UserModel");
 
 const typeDefs = `#graphql
   type User {
+    id: ID!
     name: String
     username: String
     email: String
@@ -9,6 +10,7 @@ const typeDefs = `#graphql
   }
   type Query {
     getUsers: [User]
+    getUserById(id: ID!): User
   }
   input RegisterUserInput {
     name: String
@@ -28,8 +30,13 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    getUsers: () => {
+    getUsers: async () => {
+      const users = await UserModel.getAllUsers();
       return users;
+    },
+    getUserById: async (_, { id }) => {
+      const user = await UserModel.getAllUsers(id);
+      return user;
     },
   },
   Mutation: {

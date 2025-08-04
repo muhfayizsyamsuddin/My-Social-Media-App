@@ -67,5 +67,15 @@ class UserModel {
     const access_token = signToken({ id: user._id, username: user.username });
     return access_token;
   }
+
+  static async getAllUsers() {
+    return await this.collection().find({}).toArray();
+  }
+
+  static async getUserById(id) {
+    return await this.collection()
+      .find({ _id: new ObjectId(id) })
+      .toArray();
+  }
 }
 module.exports = UserModel;
