@@ -1,13 +1,4 @@
-const { database } = require("../config/mongodb");
-
-const users = [
-  {
-    name: "user",
-    username: "user",
-    email: "user@mail.com",
-    password: "password123",
-  },
-];
+const UserModel = require("../models/UserModel");
 
 const typeDefs = `#graphql
   type User {
@@ -19,14 +10,19 @@ const typeDefs = `#graphql
   type Query {
     getUsers: [User]
   }
-  input UserInput {
+  input RegisterUserInput {
     name: String
     username: String
     email: String
     password: String
   }
+  input LoginUserInput {
+    username: String
+    password: String
+  }
   type Mutation {
-    addUser(newUser: UserInput): User
+    register(newUser: RegisterUserInput): User
+    login(userLogin: LoginUserInput): String
   }
 `;
 
@@ -37,7 +33,7 @@ const resolvers = {
     },
   },
   Mutation: {
-    addUser: async (_, { newUser }) => {
+    register: async (_, { newUser }) => {
       const { name, username, email, password } = newUser;
       const user = {
         name,
@@ -45,8 +41,17 @@ const resolvers = {
         email,
         password,
       };
-      await database.collection("users").insertOne(user);
+      await UserModel.register(user);
       return user;
+    },
+    login: async (_, { userLogin }) => {
+      const { username, password } = userLogin;
+      const user = {
+        username,
+        password,
+      };
+      const access_token = await UserModel.login(user);
+      return access_token;
     },
   },
 };
