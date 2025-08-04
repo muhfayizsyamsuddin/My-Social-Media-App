@@ -11,6 +11,7 @@ const typeDefs = `#graphql
   type Query {
     getUsers: [User]
     getUserById(id: ID!): User
+    getUserByUsername(username: String!): User
   }
   input RegisterUserInput {
     name: String
@@ -36,6 +37,10 @@ const resolvers = {
     },
     getUserById: async (_, { id }) => {
       const user = await UserModel.getAllUsers(id);
+      return user;
+    },
+    getUserByUsername: async (_, { username }) => {
+      const user = await UserModel.getUserByUsername(username);
       return user;
     },
   },

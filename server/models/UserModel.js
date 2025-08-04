@@ -2,6 +2,7 @@
 const { database } = require("../config/mongodb");
 const { hashPassword, comparePassword } = require("../helpers/bcrypt");
 const { signToken } = require("../helpers/jwt");
+const user = require("../schemas/user");
 
 class UserModel {
   static collection() {
@@ -76,6 +77,18 @@ class UserModel {
     return await this.collection()
       .find({ _id: new ObjectId(id) })
       .toArray();
+  }
+
+  static async getUserByUsername(username = "") {
+    if (!username) {
+      throw new Error("Username is required");
+    }
+    return await this.collection().findOne({
+      username: {
+        $regex: username,
+        $options: "i",
+      },
+    });
   }
 }
 module.exports = UserModel;
