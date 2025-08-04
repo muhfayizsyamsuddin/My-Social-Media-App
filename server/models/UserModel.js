@@ -1,9 +1,15 @@
 "use strict";
-const users = [
-  {
-    name: "The Awakening",
-    username: "Kate Chopin",
-    email: "user@mail.com",
-    password: "password123",
-  },
-];
+
+class UserModel {
+  static async addUser(newUser) {
+    const { name, username, email, password } = newUser;
+    const user = {
+      name,
+      username,
+      email,
+      password,
+    };
+    await database.collection("users").insertOne(user);
+    return user;
+  }
+}
