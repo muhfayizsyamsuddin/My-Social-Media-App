@@ -69,17 +69,11 @@ class UserModel {
     return access_token;
   }
 
-  static async getAllUsers() {
-    return await this.collection().find({}).toArray();
-  }
-
   static async getUserById(id) {
-    return await this.collection()
-      .find({ _id: new ObjectId(id) })
-      .toArray();
+    return await this.collection().findOne({ _id: new ObjectId(id) });
   }
 
-  static async getUserByUsername(username = "") {
+  static async searchUsers(username = "") {
     if (!username) {
       throw new Error("Username is required");
     }

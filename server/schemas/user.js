@@ -4,14 +4,39 @@ const typeDefs = `#graphql
   type User {
     id: ID!
     name: String
-    username: String
-    email: String
-    password: String
+    username: String!
+    email: String!
+    password: String!
+    followers: [Follow]
+    following: [Follow]
   }
-  type Query {
-    getUsers: [User]
-    getUserById(id: ID!): User
-    getUserByUsername(username: String!): User
+  type Post{
+    id: ID!
+    content: String!
+    tags: [String]
+    imgUrl: String
+    author: User
+    comments: [Comment]
+    likes: [Like]
+    createdAt: String
+    updatedAt: String
+  }
+  type Comment {
+    username: String!
+    content: String!
+    createdAt: String
+    updatedAt: String
+  }
+  type Like {
+    username: String!
+    createdAt: String
+    updatedAt: String
+  }
+  type Follow {
+    followerId: ID!
+    followingId: ID!
+    createdAt: String
+    updatedAt: String
   }
   input RegisterUserInput {
     name: String
@@ -22,6 +47,25 @@ const typeDefs = `#graphql
   input LoginUserInput {
     username: String
     password: String
+  }
+  input PostInput {
+    content: String!
+    tags: [String]
+    imgUrl: String
+  }
+  input CommentInput {
+    postId: ID!
+    content: String!
+  }
+  input FollowInput {
+    followerId: ID!
+    followingId: ID!
+  }
+  type Query {
+    getUsers: [User]
+    getUserById(id: ID!): User
+    getUserByUsername(username: String!): User
+    searchUsers(keyword: String!): [User]
   }
   type Mutation {
     register(newUser: RegisterUserInput): User
@@ -42,6 +86,13 @@ const resolvers = {
     getUserByUsername: async (_, { username }) => {
       const user = await UserModel.getUserByUsername(username);
       return user;
+    },
+    searchUsers: async (_, { keyword }) => {
+      // if (!keyword) {
+      //   throw new Error("Keyword is required for search");
+      // }
+      const users = await UserModel.searchUsers(keyword);
+      return users;
     },
   },
   Mutation: {
