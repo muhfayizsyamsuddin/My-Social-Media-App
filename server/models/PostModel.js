@@ -60,7 +60,34 @@ class PostModel {
   }
 
   static async getAllPosts() {
-    return await this.collection().find().toArray();
+    // return await this.collection().find().toArray();
+    const agg = [
+      {
+        $lookup: {
+          from: "users",
+          localField: "authorId",
+          foreignField: "_id",
+          as: "author",
+        },
+      },
+      {
+        $unwind: {
+          path: "$author",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          "author.password": false,
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+    ];
+    const result = await this.collection().aggregate(agg).toArray();
+    console.log("🚀 ~ PostModel ~ getAllPosts ~ result:", result);
+    return result;
   }
 
   static async getPostById(id) {
