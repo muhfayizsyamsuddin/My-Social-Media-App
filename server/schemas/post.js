@@ -48,8 +48,8 @@ const typeDefs = `#graphql
   }
   type Mutation {
     addPost(newPost: NewPost): Post
-    commentPost(postId: ID!, comment: CommentInput): Post
-    likePost(postId: ID!, like: LikeInput): Post
+    commentPost(postId: ID!, comment: CommentInput): String
+    likePost(postId: ID!, like: LikeInput): String
   }
 `;
 
@@ -94,13 +94,13 @@ const resolvers = {
     },
     commentPost: async (_, { postId, comment }, { auth }) => {
       //   await auth();
-      const updatedPost = await PostModel.addCommentToPost(postId, comment);
-      return updatedPost;
+      await PostModel.addCommentToPost(postId, comment);
+      return "Comment added successfully";
     },
     likePost: async (_, { postId, like }, { auth }) => {
       //   await auth();
-      const updatedPost = await PostModel.addLikeToPost(postId, like);
-      return updatedPost;
+      await PostModel.addLikeToPost(postId, like);
+      return "Like added successfully";
     },
   },
 };

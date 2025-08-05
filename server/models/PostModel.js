@@ -66,5 +66,44 @@ class PostModel {
   static async getPostById(id) {
     return await this.collection().findOne({ _id: new ObjectId(id) });
   }
+
+  static async addCommentToPost(postId, comment) {
+    if (!comment.content || !comment.username) {
+      throw new Error("Comment must have content and username");
+    }
+    return await this.collection().updateOne(
+      { _id: new ObjectId(postId) },
+      {
+        $push: {
+          comments: {
+            content: comment.content,
+            username: comment.username,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+        },
+        $set: { updatedAt: new Date().toISOString() },
+      }
+    );
+  }
+
+  static async addLikeToPost(postId, like) {
+    if (!like.username) {
+      throw new Error("Like must have a username");
+    }
+    return await this.collection().updateOne(
+      { _id: new ObjectId(postId) },
+      {
+        $push: {
+          likes: {
+            username: like.username,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+        },
+        $set: { updatedAt: new Date().toISOString() },
+      }
+    );
+  }
 }
 module.exports = PostModel;
