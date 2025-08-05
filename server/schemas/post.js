@@ -8,8 +8,9 @@ const typeDefs = `#graphql
     tags: [String]
     imgUrl: String
     authorId: ID
-    # comments: [Comment]
-    # likes: [Like]
+    author: User
+    comments: [Comment]
+    likes: [Like]
     createdAt: String
     updatedAt: String
   }
@@ -24,40 +25,31 @@ const typeDefs = `#graphql
     createdAt: String
     updatedAt: String
   }
-#   type Follow {
-#     followerId: ID
-#     followingId: ID
-#     createdAt: String
-#     updatedAt: String
-#   }
   input NewPost {
     content: String!
     tags: [String]
     imgUrl: String
     authorId: ID!
-    # comments: [CommentInput]
-    # likes: [LikeInput]
+    comments: [CommentInput]
+    likes: [LikeInput]
     # createdAt: String
     # updatedAt: String
   }
-#   input CommentInput {
-#     postId: ID
-#     content: String
-#   }
+  input CommentInput {
+    username: String
+    content: String
+  }
   input LikeInput {
-  postId: ID!
-  username: String!
+    username: String!
 }
-#   input FollowInput {
-#     followerId: ID
-#     followingId: ID
-#   }
   type Query {
     getPosts: [Post]
     getPostById(_id: ID!): Post
   }
   type Mutation {
     addPost(newPost: NewPost): Post
+    commentPost(postId: ID!, comment: CommentInput): Post
+    likePost(postId: ID!, like: LikeInput): Post
   }
 `;
 
@@ -81,8 +73,8 @@ const resolvers = {
         tags,
         imgUrl,
         authorId,
-        // comments,
-        // likes,
+        comments,
+        likes,
         createdAt,
         updatedAt,
       } = newPost;
@@ -92,13 +84,23 @@ const resolvers = {
         tags,
         imgUrl,
         authorId,
-        // comments,
-        // likes,
+        comments,
+        likes,
         createdAt,
         updatedAt,
       };
       const createdPost = await PostModel.addPost(post);
       return createdPost;
+    },
+    commentPost: async (_, { postId, comment }, { auth }) => {
+      //   await auth();
+      const updatedPost = await PostModel.addCommentToPost(postId, comment);
+      return updatedPost;
+    },
+    likePost: async (_, { postId, like }, { auth }) => {
+      //   await auth();
+      const updatedPost = await PostModel.addLikeToPost(postId, like);
+      return updatedPost;
     },
   },
 };
