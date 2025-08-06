@@ -56,7 +56,8 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    getPosts: async () => {
+    getPosts: async (_, __, { auth }) => {
+      await auth();
       const postsCache = await redis.get("posts");
       if (postsCache) {
         console.log("masuk cached ");
@@ -68,7 +69,8 @@ const resolvers = {
       await redis.set("posts", JSON.stringify(posts));
       return posts;
     },
-    getPostById: async (_, { id }) => {
+    getPostById: async (_, { id }, { auth }) => {
+      await auth();
       const post = await PostModel.getPostById(id);
       return post;
     },
@@ -97,19 +99,19 @@ const resolvers = {
         likes,
         createdAt,
         updatedAt,
-        userId: user._id,
+        authorId: user._id,
       };
       const createdPost = await PostModel.addPost(post);
       await redis.del("posts"); // Clear cache after adding a new post
       return createdPost;
     },
     commentPost: async (_, { postId, comment }, { auth }) => {
-      //   await auth();
+      await auth();
       await PostModel.addCommentToPost(postId, comment);
       return "Comment added successfully";
     },
     likePost: async (_, { postId, like }, { auth }) => {
-      //   await auth();
+      await auth();
       await PostModel.addLikeToPost(postId, like);
       return "Like added successfully";
     },

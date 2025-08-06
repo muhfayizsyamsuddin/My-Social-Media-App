@@ -49,22 +49,26 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    getUsers: async () => {
+    getUsers: async (_, __, { auth }) => {
+      await auth();
       const users = await UserModel.getAllUsers();
       return users;
     },
-    getUserById: async (_, { id }) => {
+    getUserById: async (_, { id }, { auth }) => {
+      await auth();
       const user = await UserModel.getUserById(id);
       return user;
     },
-    getUserByUsername: async (_, { username }) => {
+    getUserByUsername: async (_, { username }, { auth }) => {
+      await auth();
       const user = await UserModel.getUserByUsername(username);
       return user;
     },
-    searchUsers: async (_, { keyword }) => {
-      // if (!keyword) {
-      //   throw new Error("Keyword is required for search");
-      // }
+    searchUsers: async (_, { keyword }, { auth }) => {
+      await auth();
+      if (!keyword) {
+        throw new Error("Keyword is required for search");
+      }
       const users = await UserModel.searchUsers(keyword);
       return users;
     },

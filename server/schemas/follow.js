@@ -26,9 +26,9 @@ const resolvers = {
       const user = await auth();
       const { followerId, followingId } = followInput;
       const follow = {
-        followerId,
+        followerId: user._id,
         followingId,
-        userId: user._id,
+        // userId: user._id,
       };
       const result = await FollowModel.createFollow(follow);
       return result;

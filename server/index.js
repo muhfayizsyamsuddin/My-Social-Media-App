@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
 
@@ -32,7 +33,7 @@ startStandaloneServer(server, {
         if (!decoded) {
           throw new Error("You must be logged in to perform this action");
         }
-        const user = await UserModel.getUserById(decoded.userid);
+        const user = await UserModel.getUserById(decoded.id);
         if (!user) {
           throw new Error("You must be logged in to perform this action");
         }
