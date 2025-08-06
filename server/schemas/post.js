@@ -44,7 +44,7 @@ const typeDefs = `#graphql
 }
   type Query {
     getPosts: [Post]
-    getPostById(_id: ID!): Post
+    getPostById(id: ID!): Post
   }
   type Mutation {
     addPost(newPost: NewPost): Post
@@ -66,7 +66,7 @@ const resolvers = {
   },
   Mutation: {
     addPost: async (_, { newPost }, { auth }) => {
-      //   await auth();
+      const user = await auth();
       const {
         _id,
         content,
@@ -88,6 +88,7 @@ const resolvers = {
         likes,
         createdAt,
         updatedAt,
+        userId: user._id,
       };
       const createdPost = await PostModel.addPost(post);
       return createdPost;

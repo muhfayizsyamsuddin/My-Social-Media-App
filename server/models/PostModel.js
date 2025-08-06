@@ -91,7 +91,32 @@ class PostModel {
   }
 
   static async getPostById(id) {
-    return await this.collection().findOne({ _id: new ObjectId(id) });
+    // return await this.collection().findOne({ _id: new ObjectId(id) });
+    const agg = [
+      { $match: { _id: new ObjectId(id) } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "authorId",
+          foreignField: "_id",
+          as: "author",
+        },
+      },
+      {
+        $unwind: {
+          path: "$author",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          "author.password": false,
+        },
+      },
+    ];
+    const result = await this.collection().aggregate(agg).toArray();
+    console.log("🚀 ~ PostModel ~ getPostById ~ result:", result);
+    return result[0];
   }
 
   static async addCommentToPost(postId, comment) {

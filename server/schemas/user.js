@@ -8,8 +8,8 @@ const typeDefs = `#graphql
     name: String
     username: String
     email: String
-    # followers: [Follow]
-    # following: [Follow]
+    followers: [User]
+    followings: [User]
   }
   # type Follow {
   #   followerId: ID

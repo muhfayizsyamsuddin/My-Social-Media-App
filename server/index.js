@@ -21,10 +21,13 @@ startStandaloneServer(server, {
         if (!authentication) {
           throw new Error("You must be logged in to perform this action");
         }
-        const access_token = authentication.split(" ")[1];
-        if (!access_token) {
-          throw new Error("You must be logged in to perform this action");
+        const [type, access_token] = authentication.split(" ");
+        if (type !== "Bearer") {
+          throw new Error("Invalid authentication type");
         }
+        // if (!access_token) {
+        //   throw new Error("You must be logged in to perform this action");
+        // }
         const decoded = verifyToken(access_token);
         if (!decoded) {
           throw new Error("You must be logged in to perform this action");

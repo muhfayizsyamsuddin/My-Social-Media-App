@@ -1,6 +1,7 @@
 const PostModel = require("../models/PostModel");
 const UserModel = require("../models/UserModel");
 const FollowModel = require("../models/FollowModel");
+const user = require("./user");
 
 const typeDefs = `#graphql
   type Follow {
@@ -21,11 +22,13 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Mutation: {
-    followUser: async (_, { followInput }) => {
+    followUser: async (_, { followInput }, { auth }) => {
+      const user = await auth();
       const { followerId, followingId } = followInput;
       const follow = {
         followerId,
         followingId,
+        userId: user._id,
       };
       const result = await FollowModel.createFollow(follow);
       return result;

@@ -60,7 +60,86 @@ class UserModel {
   }
 
   static async getUserById(id) {
-    return await this.collection().findOne({ _id: new ObjectId(id) });
+    // return await this.collection().findOne({ _id: new ObjectId(id) });
+    const agg = [
+      {
+        $match: { _id: new ObjectId(id) },
+      },
+      {
+        $lookup: {
+          from: "follows",
+          localField: "_id",
+          foreignField: "followingId",
+          as: "UserFollowers",
+        },
+      },
+      {
+        $lookup: {
+          from: "follows",
+          localField: "_id",
+          foreignField: "followerId",
+          as: "UserFollowings",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          let: {
+            followerId: {
+              $map: {
+                input: "$UserFollowers",
+                as: "f",
+                in: "$$f.followerId",
+              },
+            },
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $in: ["$_id", "$$followerId"],
+                },
+              },
+            },
+          ],
+          as: "followers",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          let: {
+            followingId: {
+              $map: {
+                input: "$UserFollowings",
+                as: "f",
+                in: "$$f.followingId",
+              },
+            },
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $in: ["$_id", "$$followingId"],
+                },
+              },
+            },
+          ],
+          as: "followings",
+        },
+      },
+      {
+        $project: {
+          password: false,
+        },
+      },
+    ];
+    // "followerId" = user yang sedang login dan menekan tombol "Follow"
+    // "followingId" = target user yang ingin dia follow
+    const result = await this.collection().aggregate(agg).toArray();
+    console.log("🚀 ~ UserModel ~ getUserById ~ result:", result);
+    return result[0];
   }
 
   static async searchUsers(username = "") {
