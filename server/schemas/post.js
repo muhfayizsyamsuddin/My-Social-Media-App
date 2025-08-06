@@ -1,3 +1,4 @@
+const redis = require("../config/redis");
 const PostModel = require("../models/PostModel");
 const UserModel = require("../models/UserModel");
 
@@ -56,7 +57,15 @@ const typeDefs = `#graphql
 const resolvers = {
   Query: {
     getPosts: async () => {
+      const postsCache = await redis.get("posts");
+      if (postsCache) {
+        console.log("masuk cached ");
+        return JSON.parse(postsCache);
+      }
+
       const posts = await PostModel.getAllPosts();
+      console.log("masuk mongodb");
+      await redis.set("posts", JSON.stringify(posts));
       return posts;
     },
     getPostById: async (_, { id }) => {
@@ -91,6 +100,7 @@ const resolvers = {
         userId: user._id,
       };
       const createdPost = await PostModel.addPost(post);
+      await redis.del("posts"); // Clear cache after adding a new post
       return createdPost;
     },
     commentPost: async (_, { postId, comment }, { auth }) => {
