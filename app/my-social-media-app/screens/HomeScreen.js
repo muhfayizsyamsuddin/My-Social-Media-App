@@ -1,5 +1,12 @@
 import { useNavigation } from "@react-navigation/native";
-import { Button, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Button,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React from "react";
 import PostCard from "../components/PostCard";
 import { gql, useQuery } from "@apollo/client";
@@ -40,14 +47,30 @@ export default function HomeScreen() {
   console.log({ loading, error, data });
   const navigation = useNavigation();
 
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#fff" />
+        <Text style={{ color: "white" }}>Loading posts...</Text>
+      </View>
+    );
+  }
+  if (error) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ color: "red" }}>Failed to fetch posts.</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1 }}>
-      <Pressable
+      {/* <Pressable
         onPress={() => navigation.navigate("PostDetail")}
         style={{ flex: 1 }}
-      >
-        <PostCard />
-      </Pressable>
+      > */}
+      <PostCard posts={data?.getPosts} />
+      {/* </Pressable> */}
     </View>
   );
 }

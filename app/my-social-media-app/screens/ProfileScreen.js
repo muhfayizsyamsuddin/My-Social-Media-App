@@ -1,7 +1,9 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React, { useContext } from "react";
+import { Button, Text, View } from "react-native";
+import { AuthContext } from "../contexts/AuthContext";
 
 export default function ProfileScreen() {
+  const { setIsSignedIn } = useContext(AuthContext);
   // Misal: ambil userId dari props atau navigation params
   // Untuk contoh, kita hardcode userId
   const userId = 1;
@@ -99,6 +101,14 @@ export default function ProfileScreen() {
         </View>
       </View>
       {/* Tambahkan komponen lain seperti list pin user di sini */}
+      <Button
+        title="Logout"
+        color="#841584"
+        onPress={() => {
+          console.log("Logout Pressed");
+          setIsSignedIn(false);
+        }}
+      />
     </View>
   );
 }

@@ -15,7 +15,7 @@ export default function BottomTabs() {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === "Home") {
+          if (route.name === "PostList") {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Profile") {
             iconName = focused ? "person-sharp" : "person-outline";
@@ -36,7 +36,11 @@ export default function BottomTabs() {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen
+        name="PostList"
+        options={{ title: "Home" }}
+        component={HomeScreen}
+      />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="AddPost" component={AddPostScreen} />
       <Tab.Screen name="AddComment" component={AddCommentScreen} />

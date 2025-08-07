@@ -3,15 +3,18 @@ import RootStack from "./navigators/RootStack";
 // import BottomTabs from "./navigators/BottomTab";
 import { ApolloProvider } from "@apollo/client";
 import client from "./config/apollo";
+import AuthProvider from "./contexts/AuthContext";
 
 export default function App() {
   return (
-    <ApolloProvider client={client}>
-      <NavigationContainer>
-        <RootStack />
-        {/* <BottomTabs /> */}
-      </NavigationContainer>
-    </ApolloProvider>
+    <AuthProvider>
+      <ApolloProvider client={client}>
+        <NavigationContainer>
+          <RootStack />
+          {/* <BottomTabs /> */}
+        </NavigationContainer>
+      </ApolloProvider>
+    </AuthProvider>
   );
 }
 

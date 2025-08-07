@@ -57,7 +57,7 @@ const typeDefs = `#graphql
 const resolvers = {
   Query: {
     getPosts: async (_, __, { auth }) => {
-      await auth();
+      // await auth();
       const postsCache = await redis.get("posts");
       if (postsCache) {
         console.log("masuk cached ");
