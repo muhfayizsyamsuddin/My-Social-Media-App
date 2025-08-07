@@ -22,43 +22,45 @@ export default function SearchScreen() {
   };
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
-      <View style={{ flexDirection: "row", marginBottom: 16 }}>
-        <TextInput
-          style={{
-            flex: 1,
-            borderWidth: 1,
-            borderColor: "#ccc",
-            borderRadius: 8,
-            paddingHorizontal: 12,
-            height: 40,
-            backgroundColor: "#fff",
-          }}
-          placeholder="Search users"
-          value={query}
-          onChangeText={setQuery}
-          onSubmitEditing={handleSearch}
-          returnKeyType="search"
-        />
-      </View>
-      <View>
-        {results.map((user) => (
-          <View
-            key={user.id}
+    <View style={{ flex: 1, backgroundColor: "#000" }}>
+      <View style={{ flex: 1, padding: 16 }}>
+        <View style={{ flexDirection: "row", marginBottom: 16 }}>
+          <TextInput
             style={{
-              padding: 12,
-              borderBottomWidth: 1,
-              borderBottomColor: "#eee",
+              flex: 1,
+              borderWidth: 1,
+              borderColor: "#ccc",
+              borderRadius: 8,
+              paddingHorizontal: 12,
+              height: 40,
+              backgroundColor: "#fff",
             }}
-          >
-            <Text style={{ fontSize: 18 }}>{user.name}</Text>
-          </View>
-        ))}
-        {results.length === 0 && (
-          <Text style={{ textAlign: "center", color: "#888" }}>
-            No users found
-          </Text>
-        )}
+            placeholder="Search users"
+            value={query}
+            onChangeText={setQuery}
+            onSubmitEditing={handleSearch}
+            returnKeyType="search"
+          />
+        </View>
+        <View>
+          {results.map((user) => (
+            <View
+              key={user.id}
+              style={{
+                padding: 12,
+                borderBottomWidth: 1,
+                borderBottomColor: "#eee",
+              }}
+            >
+              <Text style={{ fontSize: 18, color: "#fff" }}>{user.name}</Text>
+            </View>
+          ))}
+          {results.length === 0 && (
+            <Text style={{ textAlign: "center", color: "#888" }}>
+              No users found
+            </Text>
+          )}
+        </View>
       </View>
     </View>
   );

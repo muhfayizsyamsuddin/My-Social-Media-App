@@ -27,8 +27,28 @@ export default function PostCard({ posts }) {
         columns={2}
         spacing={4}
         onPressImage={(item) => {
-          navigation.navigate("PostDetail", { postId: item.id });
+          navigation.navigate("PostDetail", { postId: item.id, _id: item.id });
         }}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ padding: 8 }}
+        backgroundColor="#000000ff"
+        imageContainerStyle={{ borderRadius: 8 }}
+        renderImage={(item) => (
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("PostDetail", { postId: item.id })
+            }
+          >
+            <Image
+              source={{ uri: item.uri }}
+              style={{
+                width: item.width,
+                height: item.height,
+                borderRadius: 8,
+              }}
+            />
+          </TouchableOpacity>
+        )}
       />
     </View>
   );
@@ -37,6 +57,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 8,
-    backgroundColor: "#282c34",
+    backgroundColor: "#000000ff",
   },
 });

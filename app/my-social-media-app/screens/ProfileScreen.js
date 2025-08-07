@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Button, Text, View } from "react-native";
 import { AuthContext } from "../contexts/AuthContext";
 import { deleteSecure } from "../helpers/SecureStore";
+import { TouchableOpacity } from "react-native";
 
 export default function ProfileScreen() {
   const { setIsSignedIn } = useContext(AuthContext);
@@ -76,41 +77,67 @@ export default function ProfileScreen() {
   }
 
   return (
-    <View style={{ flex: 1, alignItems: "center", paddingTop: 40 }}>
-      <Text style={{ fontSize: 28, fontWeight: "bold" }}>{user.username}</Text>
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        paddingTop: 40,
+        backgroundColor: "#000",
+      }}
+    >
+      <Text style={{ fontSize: 28, fontWeight: "bold", color: "#fff" }}>
+        {user.username}
+      </Text>
       <Text style={{ fontSize: 16, color: "gray", marginBottom: 20 }}>
         {user.email}
       </Text>
       <View style={{ flexDirection: "row", marginBottom: 20 }}>
         <View style={{ alignItems: "center", marginHorizontal: 20 }}>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+          <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
             {user.listsCount}
           </Text>
-          <Text>Lists</Text>
+          <Text style={{ color: "#fff" }}>Posts</Text>
         </View>
         <View style={{ alignItems: "center", marginHorizontal: 20 }}>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+          <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
             {user.followersCount}
           </Text>
-          <Text>Followers</Text>
+          <Text style={{ color: "#fff" }}>Followers</Text>
         </View>
         <View style={{ alignItems: "center", marginHorizontal: 20 }}>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+          <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
             {user.followingCount}
           </Text>
-          <Text>Following</Text>
+          <Text style={{ color: "#fff" }}>Following</Text>
         </View>
       </View>
       {/* Tambahkan komponen lain seperti list pin user di sini */}
-      <Button
+      {/* <Button
         title="Logout"
-        color="#841584"
+        color="#e60023"
         onPress={async () => {
           console.log("Logout Pressed");
           await deleteSecure("token");
           setIsSignedIn(false);
         }}
-      />
+      /> */}
+      <TouchableOpacity
+        onPress={async () => {
+          console.log("Logout Pressed");
+          await deleteSecure("token");
+          setIsSignedIn(false);
+        }}
+        style={{
+          backgroundColor: "#e60023",
+          paddingVertical: 10,
+          paddingHorizontal: 20,
+          borderRadius: 8,
+          alignItems: "center",
+          marginTop: 20,
+        }}
+      >
+        <Text style={{ color: "#fff", fontWeight: "bold" }}>Logout</Text>
+      </TouchableOpacity>
     </View>
   );
 }

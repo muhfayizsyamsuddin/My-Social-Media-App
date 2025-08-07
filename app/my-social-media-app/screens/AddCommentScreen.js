@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { TouchableOpacity } from "react-native";
 import { Text, View, TextInput, Button, StyleSheet, Alert } from "react-native";
 
 export default function AddCommentScreen({ route, navigation }) {
@@ -29,7 +30,9 @@ export default function AddCommentScreen({ route, navigation }) {
         onChangeText={setComment}
         multiline
       />
-      <Button title="Post Comment" onPress={handleAddComment} />
+      <TouchableOpacity style={styles.button} onPress={handleAddComment}>
+        <Text style={styles.buttonText}>Post Comment</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -39,13 +42,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     justifyContent: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
   },
   title: {
     fontSize: 22,
     marginBottom: 16,
     fontWeight: "bold",
     textAlign: "center",
+    color: "#fff",
   },
   input: {
     borderWidth: 1,
@@ -55,6 +59,18 @@ const styles = StyleSheet.create({
     minHeight: 80,
     marginBottom: 16,
     fontSize: 16,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#333",
+  },
+  button: {
+    backgroundColor: "#1e90ff",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

@@ -14,9 +14,20 @@ export default function RootStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: "#282c34" },
-        headerTintColor: "#fff",
+        contentStyle: { backgroundColor: "#000000ff" },
+        headerStyle: { backgroundColor: "#000000ff" },
+        headerTintColor: "#ffffff",
         headerTitleStyle: { fontWeight: "bold" },
+        headerTitleAlign: "center",
+        headerShadowVisible: false,
+        headerBackTitleVisible: false, // Hide back button text
+        headerBackTitle: "Back", // Optional: Set a custom back button title
+        headerBackImage: () => (
+          <Ionicons name="arrow-back" size={24} color="#ffffff" />
+        ), // Custom back button icon
+        // headerTitle: "My Social Media App", // Set a custom title for the header
+        headerShown: true, // Show header for all screens
+        animation: "fade", // Set a custom animation for screen transitions
       }}
     >
       {isSignedIn ? (

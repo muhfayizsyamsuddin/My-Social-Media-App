@@ -10,6 +10,7 @@ import {
 import React from "react";
 import PostCard from "../components/PostCard";
 import { gql, useQuery } from "@apollo/client";
+import { StatusBar } from "expo-status-bar";
 
 const GET_POSTS = gql`
   query GetPosts {
@@ -50,7 +51,7 @@ export default function HomeScreen() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#fff" />
+        <ActivityIndicator size="large" color="#ffffff" />
         <Text style={{ color: "white" }}>Loading posts...</Text>
       </View>
     );
@@ -64,23 +65,21 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* <Pressable
+    <>
+      <StatusBar
+        style="//#endregion"
+        backgroundColor="#000"
+        translucent={false}
+      />
+      <View style={{ flex: 1, backgroundColor: "#000000ff" }}>
+        {/* <Pressable
         onPress={() => navigation.navigate("PostDetail")}
         style={{ flex: 1 }}
       > */}
-      <PostCard posts={data?.getPosts} />
-      {/* </Pressable> */}
-    </View>
+
+        <PostCard posts={data?.getPosts} />
+        {/* </Pressable> */}
+      </View>
+    </>
   );
 }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: "#282c34",
-//     // backgroundColor: "#fff",
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-// });

@@ -8,14 +8,23 @@ export default function AddPostScreen() {
         justifyContent: "center",
         alignItems: "center",
         padding: 20,
-        backgroundColor: "#fff",
+        backgroundColor: "#000",
       }}
     >
-      <Text style={{ fontSize: 28, fontWeight: "bold", marginBottom: 24 }}>
+      <Text
+        style={{
+          fontSize: 28,
+          fontWeight: "bold",
+          marginBottom: 24,
+          color: "#fff",
+        }}
+      >
         Create New Post
       </Text>
       <View style={{ width: "100%", marginBottom: 16 }}>
-        <Text style={{ fontSize: 16, marginBottom: 8 }}>Content</Text>
+        <Text style={{ fontSize: 16, marginBottom: 8, color: "#fff" }}>
+          Content
+        </Text>
         <View
           style={{
             borderWidth: 1,
@@ -28,7 +37,9 @@ export default function AddPostScreen() {
         </View>
       </View>
       <View style={{ width: "100%", marginBottom: 16 }}>
-        <Text style={{ fontSize: 16, marginBottom: 8 }}>Image URL</Text>
+        <Text style={{ fontSize: 16, marginBottom: 8, color: "#fff" }}>
+          Image URL
+        </Text>
         <View
           style={{
             borderWidth: 1,
@@ -42,7 +53,9 @@ export default function AddPostScreen() {
       </View>
       {/* Tags input form */}
       <View style={{ width: "100%", marginBottom: 16 }}>
-        <Text style={{ fontSize: 16, marginBottom: 8 }}>Tags</Text>
+        <Text style={{ fontSize: 16, marginBottom: 8, color: "#fff" }}>
+          Tags
+        </Text>
         <View
           style={{
             borderWidth: 1,
