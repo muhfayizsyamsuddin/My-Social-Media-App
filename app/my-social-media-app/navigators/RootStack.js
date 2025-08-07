@@ -3,6 +3,7 @@ import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import HomeScreen from "../screens/HomeScreen";
 import BottomTabs from "./BottomTab";
+import PostDetail from "../screens/PostDetail";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,7 @@ export default function RootStack() {
     >
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="PostDetail" component={PostDetail} />
       <Stack.Screen
         name="Home"
         options={{

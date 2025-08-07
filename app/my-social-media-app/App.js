@@ -1,13 +1,17 @@
 import { NavigationContainer } from "@react-navigation/native";
 import RootStack from "./navigators/RootStack";
-import BottomTabs from "./navigators/BottomTab";
+// import BottomTabs from "./navigators/BottomTab";
+import { ApolloProvider } from "@apollo/client";
+import client from "./config/apollo";
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <RootStack />
-      {/* <BottomTabs /> */}
-    </NavigationContainer>
+    <ApolloProvider client={client}>
+      <NavigationContainer>
+        <RootStack />
+        {/* <BottomTabs /> */}
+      </NavigationContainer>
+    </ApolloProvider>
   );
 }
 
