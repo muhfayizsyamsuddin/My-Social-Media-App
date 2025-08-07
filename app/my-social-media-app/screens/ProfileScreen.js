@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Button, Text, View } from "react-native";
 import { AuthContext } from "../contexts/AuthContext";
+import { deleteSecure } from "../helpers/SecureStore";
 
 export default function ProfileScreen() {
   const { setIsSignedIn } = useContext(AuthContext);
@@ -104,8 +105,9 @@ export default function ProfileScreen() {
       <Button
         title="Logout"
         color="#841584"
-        onPress={() => {
+        onPress={async () => {
           console.log("Logout Pressed");
+          await deleteSecure("token");
           setIsSignedIn(false);
         }}
       />
