@@ -57,62 +57,91 @@ export default function RegisterScreen() {
   };
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={{ flex: 1, backgroundColor: "#000" }}
+    >
       <View
         style={{
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "#f9f9f9",
           padding: 24,
         }}
       >
-        <Text
+        <View
           style={{
-            fontSize: 28,
-            fontWeight: "bold",
-            marginBottom: 24,
-            color: "#222",
+            width: "100%",
+            maxWidth: 360,
+            backgroundColor: "#1e1e1e",
+            borderRadius: 16,
+            padding: 28,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 8,
+            elevation: 8,
           }}
         >
-          Create Account
-        </Text>
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              marginBottom: 28,
+              color: "#fff",
+              textAlign: "center",
+              letterSpacing: 1,
+            }}
+          >
+            Create Account
+          </Text>
 
-        <View style={{ width: "100%", maxWidth: 320 }}>
-          <Text style={{ marginBottom: 6, color: "#555" }}>Full Name</Text>
+          <Text style={{ marginBottom: 6, color: "#bbb", fontWeight: "600" }}>
+            Full Name
+          </Text>
           <TextInput
             style={styles.input}
             value={name}
             onChangeText={setName}
             placeholder="Enter your full name"
+            placeholderTextColor="#666"
             autoCapitalize="words"
           />
 
-          <Text style={{ marginBottom: 6, color: "#555" }}>Username</Text>
+          <Text style={{ marginBottom: 6, color: "#bbb", fontWeight: "600" }}>
+            Username
+          </Text>
           <TextInput
             style={styles.input}
             value={username}
             onChangeText={setUsername}
             placeholder="Choose a username"
+            placeholderTextColor="#666"
             autoCapitalize="none"
           />
 
-          <Text style={{ marginBottom: 6, color: "#555" }}>Email</Text>
+          <Text style={{ marginBottom: 6, color: "#bbb", fontWeight: "600" }}>
+            Email
+          </Text>
           <TextInput
             style={styles.input}
             value={email}
             onChangeText={setEmail}
             placeholder="Enter your email"
+            placeholderTextColor="#666"
             autoCapitalize="none"
             keyboardType="email-address"
           />
 
-          <Text style={{ marginBottom: 6, color: "#555" }}>Password</Text>
+          <Text style={{ marginBottom: 6, color: "#bbb", fontWeight: "600" }}>
+            Password
+          </Text>
           <TextInput
             style={styles.input}
             value={password}
             onChangeText={setPassword}
             placeholder="Create a password"
+            placeholderTextColor="#666"
             secureTextEntry
           />
 
@@ -120,24 +149,42 @@ export default function RegisterScreen() {
             onPress={handleRegister}
             disabled={loading}
             style={{
-              backgroundColor: loading ? "#ccc" : "#1976d2",
-              paddingVertical: 12,
+              backgroundColor: loading ? "#333" : "#1976d2",
+              paddingVertical: 14,
               borderRadius: 8,
               alignItems: "center",
-              marginBottom: 16,
-              marginTop: 8,
+              marginBottom: 18,
+              marginTop: 12,
+              shadowColor: "#1976d2",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.3,
+              shadowRadius: 4,
+              elevation: 2,
             }}
           >
             {loading ? (
               <ActivityIndicator color={"#fff"} />
             ) : (
-              <Text style={{ color: "#fff", fontSize: 16, fontWeight: "bold" }}>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 17,
+                  fontWeight: "bold",
+                  letterSpacing: 1,
+                }}
+              >
                 Register
               </Text>
             )}
           </TouchableOpacity>
 
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              marginTop: 4,
+            }}
+          >
             <Text style={{ color: "#888" }}>Already have an account?</Text>
             <TouchableOpacity onPress={() => navigation.navigate("Login")}>
               <Text
@@ -166,6 +213,6 @@ const styles = {
     borderRadius: 8,
     marginBottom: 14,
     paddingHorizontal: 12,
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
   },
 };
