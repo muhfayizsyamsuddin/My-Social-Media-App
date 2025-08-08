@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Text, View } from "react-native";
 import { AuthContext } from "../contexts/AuthContext";
-import { deleteSecure } from "../helpers/SecureStore";
+import { deleteSecure, getSecure } from "../helpers/SecureStore";
 import { TouchableOpacity } from "react-native";
 import { gql, useQuery } from "@apollo/client";
+import jwtDecode from "jwt-decode";
 
 const GET_USER_PROFILE = gql`
   query GetUserById($getUserByIdId: ID!) {
@@ -25,58 +26,51 @@ const GET_USER_PROFILE = gql`
 `;
 
 export default function ProfileScreen({ route }) {
+  const [userId, setUserId] = useState(null);
   const { setIsSignedIn } = useContext(AuthContext);
+
+  useEffect(() => {
+    (async () => {
+      const token = await getSecure("token");
+      console.log("Token from SecureStore:", token);
+      if (token) {
+        const decoded = jwtDecode(token);
+        console.log("Decoded token:", decoded);
+        setUserId(decoded.id);
+      }
+    })();
+  }, []);
+
   const { data, loading, error } = useQuery(GET_USER_PROFILE, {
-    variables: { getUserByIdId: "1" }, // Replace with actual user ID
+    // variables: { getUserByIdId: userId },
+    variables: userId ? { getUserByIdId: userId } : undefined,
+    skip: !userId, // Skip query if userId is not set
+    fetchPolicy: "network-only",
   });
-  // const userId = 1;
-  // Data user hardcode
-  // Data user hardcode
-  // const hardcodedUser = {
-  //   username: "abdul",
-  //   email: "abdul@example.com",
-  //   listsCount: 5,
-  //   followersCount: 120,
-  //   followingCount: 80,
-  // };
+  console.log("User ID:", userId);
+  console.log("Query Data:", data);
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ color: "white" }}>Loading user profile...</Text>
+      </View>
+    );
+  }
+  if (error) {
+    console.error("Error fetching user profile:", error);
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ color: "red" }}>Error loading profile</Text>
+      </View>
+    );
+  }
+  const user = data?.getUserById;
+  console.log("User data:", user);
   // const [user, setUser] = React.useState(hardcodedUser);
   // const [loading, setLoading] = React.useState(false);
-  /*
-  React.useEffect(() => {
-    async function fetchUserProfile() {
-      setLoading(true);
-      try {
-        const res = await fetch(`https://your-api.com/users/${userId}`);
-        const data = await res.json();
-        setUser(data);
-      } catch (err) {
-        setUser(null);
-      }
-      setLoading(false);
-    }
-    fetchUserProfile();
-  }, [userId]);
-  */
   // State untuk data user
   // const [user, setUser] = React.useState(null);
   // const [loading, setLoading] = React.useState(true);
-
-  // React.useEffect(() => {
-  //   // Ganti dengan fetch API sesuai backend Anda
-  //   async function fetchUserProfile() {
-  //     setLoading(true);
-  //     try {
-  //       // Contoh endpoint, sesuaikan dengan backend Anda
-  //       const res = await fetch(`https://your-api.com/users/${userId}`);
-  //       const data = await res.json();
-  //       setUser(data);
-  //     } catch (err) {
-  //       setUser(null);
-  //     }
-  //     setLoading(false);
-  //   }
-  //   fetchUserProfile();
-  // }, [userId]);
 
   if (loading) {
     return (
@@ -109,22 +103,25 @@ export default function ProfileScreen({ route }) {
       <Text style={{ fontSize: 16, color: "gray", marginBottom: 20 }}>
         {user.email}
       </Text>
+      <Text style={{ fontSize: 16, color: "gray", marginBottom: 20 }}>
+        {user.name}
+      </Text>
       <View style={{ flexDirection: "row", marginBottom: 20 }}>
         <View style={{ alignItems: "center", marginHorizontal: 20 }}>
           <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
-            {user.listsCount}
+            {/* {user.posts.length} */}
           </Text>
           <Text style={{ color: "#fff" }}>Posts</Text>
         </View>
         <View style={{ alignItems: "center", marginHorizontal: 20 }}>
           <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
-            {user.followersCount}
+            {user.followers.length}
           </Text>
           <Text style={{ color: "#fff" }}>Followers</Text>
         </View>
         <View style={{ alignItems: "center", marginHorizontal: 20 }}>
           <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
-            {user.followingCount}
+            {user.followings.length}
           </Text>
           <Text style={{ color: "#fff" }}>Following</Text>
         </View>
