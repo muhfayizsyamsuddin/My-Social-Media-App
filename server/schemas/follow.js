@@ -12,7 +12,7 @@ const typeDefs = `#graphql
     updatedAt: String
   }
   input FollowInput {
-    followerId: ID
+    # followerId: ID
     followingId: ID
   }
   type Mutation {

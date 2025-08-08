@@ -28,11 +28,10 @@ const typeDefs = `#graphql
   }
   input NewPost {
     content: String!
-    tags: [String]
-    imgUrl: String
-    authorId: ID!
-    comments: [CommentInput]
-    likes: [LikeInput]
+    tags: [String!]!
+    imgUrl: String!
+    # comments: [CommentInput]
+    # likes: [LikeInput]
     # createdAt: String
     # updatedAt: String
   }
@@ -78,25 +77,12 @@ const resolvers = {
   Mutation: {
     addPost: async (_, { newPost }, { auth }) => {
       const user = await auth();
-      const {
-        _id,
-        content,
-        tags,
-        imgUrl,
-        authorId,
-        comments,
-        likes,
-        createdAt,
-        updatedAt,
-      } = newPost;
+      const { _id, content, tags, imgUrl, createdAt, updatedAt } = newPost;
       const post = {
         _id,
         content,
         tags,
         imgUrl,
-        authorId,
-        comments,
-        likes,
         createdAt,
         updatedAt,
         authorId: user._id,
@@ -108,11 +94,13 @@ const resolvers = {
     commentPost: async (_, { postId, comment }, { auth }) => {
       await auth();
       await PostModel.addCommentToPost(postId, comment);
+      await redis.del("posts"); // Clear cache after adding a new post
       return "Comment added successfully";
     },
     likePost: async (_, { postId, like }, { auth }) => {
       await auth();
       await PostModel.addLikeToPost(postId, like);
+      await redis.del("posts"); // Clear cache after adding a new post
       return "Like added successfully";
     },
   },

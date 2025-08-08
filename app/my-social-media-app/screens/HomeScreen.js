@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import {
   ActivityIndicator,
   Button,
@@ -7,7 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import PostCard from "../components/PostCard";
 import { gql, useQuery } from "@apollo/client";
 import { StatusBar } from "expo-status-bar";
@@ -44,9 +44,20 @@ const GET_POSTS = gql`
 `;
 
 export default function HomeScreen() {
-  const { loading, error, data } = useQuery(GET_POSTS);
+  const { loading, error, data, refetch } = useQuery(GET_POSTS, {
+    fetchPolicy: "network-only",
+  });
   console.log({ loading, error, data });
   const navigation = useNavigation();
+  // await refetch();
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
+  // useEffect(() => {
+  //   refetch();
+  // }, []);
 
   if (loading) {
     return (

@@ -3,26 +3,44 @@ import { Button, Text, View } from "react-native";
 import { AuthContext } from "../contexts/AuthContext";
 import { deleteSecure } from "../helpers/SecureStore";
 import { TouchableOpacity } from "react-native";
+import { gql, useQuery } from "@apollo/client";
 
-export default function ProfileScreen() {
+const GET_USER_PROFILE = gql`
+  query GetUserById($getUserByIdId: ID!) {
+    getUserById(id: $getUserByIdId) {
+      _id
+      name
+      username
+      email
+      followers {
+        username
+        _id
+      }
+      followings {
+        _id
+        username
+      }
+    }
+  }
+`;
+
+export default function ProfileScreen({ route }) {
   const { setIsSignedIn } = useContext(AuthContext);
-  // Misal: ambil userId dari props atau navigation params
-  // Untuk contoh, kita hardcode userId
-  const userId = 1;
+  const { data, loading, error } = useQuery(GET_USER_PROFILE, {
+    variables: { getUserByIdId: "1" }, // Replace with actual user ID
+  });
+  // const userId = 1;
   // Data user hardcode
   // Data user hardcode
-  const hardcodedUser = {
-    username: "abdul",
-    email: "abdul@example.com",
-    listsCount: 5,
-    followersCount: 120,
-    followingCount: 80,
-  };
-  // State untuk data user
-  const [user, setUser] = React.useState(hardcodedUser);
-  const [loading, setLoading] = React.useState(false);
-
-  // Jika ingin fetch dari API, bisa aktifkan useEffect di bawah ini
+  // const hardcodedUser = {
+  //   username: "abdul",
+  //   email: "abdul@example.com",
+  //   listsCount: 5,
+  //   followersCount: 120,
+  //   followingCount: 80,
+  // };
+  // const [user, setUser] = React.useState(hardcodedUser);
+  // const [loading, setLoading] = React.useState(false);
   /*
   React.useEffect(() => {
     async function fetchUserProfile() {

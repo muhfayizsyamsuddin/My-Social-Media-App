@@ -12,8 +12,8 @@ class PostModel {
     tags = [],
     imgUrl,
     authorId,
-    comments = [],
-    likes = [],
+    // comments = [],
+    // likes = [],
   }) {
     if (!content) {
       throw new Error("Content is required");
@@ -23,37 +23,37 @@ class PostModel {
     }
 
     const now = new Date().toISOString();
-    const commentInput = comments.map((comment) => {
-      if (!comment.username || !comment.content) {
-        throw new Error("Comment must have a username and content");
-      }
-      return {
-        username: comment.username,
-        content: comment.content,
-        createdAt: now,
-        updatedAt: now,
-      };
-    });
-    const likeInput = likes.map((like) => {
-      if (!like.username) {
-        throw new Error("Like must have a username");
-      }
-      return {
-        username: like.username,
-        createdAt: now,
-        updatedAt: now,
-      };
-    });
+    // const commentInput = comments.map((comment) => {
+    //   if (!comment.username || !comment.content) {
+    //     throw new Error("Comment must have a username and content");
+    //   }
+    //   return {
+    //     username: comment.username,
+    //     content: comment.content,
+    //     createdAt: now,
+    //     updatedAt: now,
+    //   };
+    // });
+    // const likeInput = likes.map((like) => {
+    //   if (!like.username) {
+    //     throw new Error("Like must have a username");
+    //   }
+    //   return {
+    //     username: like.username,
+    //     createdAt: now,
+    //     updatedAt: now,
+    //   };
+    // });
 
     const post = {
       content,
       tags,
       imgUrl,
       authorId: new ObjectId(authorId),
-      comments: commentInput,
-      likes: likeInput,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      comments: [],
+      likes: [],
+      createdAt: now,
+      updatedAt: now,
     };
     const result = await this.collection().insertOne(post);
     return await this.collection().findOne({ _id: result.insertedId });

@@ -80,6 +80,7 @@ export default function LoginScreen() {
             value={username}
             onChangeText={setUsername}
             placeholderTextColor="#6b7280"
+            keyboardAppearance="dark"
           />
         </View>
         <View style={{ width: "100%", marginBottom: 28 }}>
@@ -93,6 +94,7 @@ export default function LoginScreen() {
             value={password}
             onChangeText={setPassword}
             placeholderTextColor="#6b7280"
+            keyboardAppearance="dark"
           />
         </View>
         <TouchableOpacity
@@ -146,5 +148,6 @@ const styles = {
     marginBottom: 14,
     paddingHorizontal: 12,
     backgroundColor: "#000",
+    color: "#fff",
   },
 };

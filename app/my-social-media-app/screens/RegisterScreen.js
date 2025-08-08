@@ -106,6 +106,7 @@ export default function RegisterScreen() {
             placeholder="Enter your full name"
             placeholderTextColor="#666"
             autoCapitalize="words"
+            keyboardAppearance="dark"
           />
 
           <Text style={{ marginBottom: 6, color: "#bbb", fontWeight: "600" }}>
@@ -118,6 +119,7 @@ export default function RegisterScreen() {
             placeholder="Choose a username"
             placeholderTextColor="#666"
             autoCapitalize="none"
+            keyboardAppearance="dark"
           />
 
           <Text style={{ marginBottom: 6, color: "#bbb", fontWeight: "600" }}>
@@ -131,6 +133,7 @@ export default function RegisterScreen() {
             placeholderTextColor="#666"
             autoCapitalize="none"
             keyboardType="email-address"
+            keyboardAppearance="dark"
           />
 
           <Text style={{ marginBottom: 6, color: "#bbb", fontWeight: "600" }}>
@@ -143,6 +146,7 @@ export default function RegisterScreen() {
             placeholder="Create a password"
             placeholderTextColor="#666"
             secureTextEntry
+            keyboardAppearance="dark"
           />
 
           <TouchableOpacity
