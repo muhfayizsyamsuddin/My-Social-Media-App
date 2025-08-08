@@ -3,7 +3,7 @@ import { setContext } from "@apollo/client/link/context";
 import { getSecure } from "../helpers/SecureStore";
 
 const httpLink = createHttpLink({
-  uri: "https://lp09z9l8-3000.asse.devtunnels.ms/",
+  uri: "https://api.faizms.com/",
 });
 
 const authLink = setContext(async (_, { headers }) => {
