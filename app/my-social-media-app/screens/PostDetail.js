@@ -1,5 +1,5 @@
-import { gql, useQuery } from "@apollo/client";
-import React from "react";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,7 +7,11 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
+  TextInput,
+  KeyboardAvoidingView,
 } from "react-native";
+import { getSecure } from "../helpers/SecureStore";
 
 const GET_POST_BY_ID = gql`
   query GetPostById($getPostByIdId: ID!) {
@@ -40,13 +44,51 @@ const GET_POST_BY_ID = gql`
   }
 `;
 
+const ADD_COMMENT = gql`
+  mutation CommentPost($postId: ID!, $comment: CommentInput) {
+    commentPost(postId: $postId, comment: $comment)
+  }
+`;
+
 export default function PostDetail({ route }) {
   const { postId, _id } = route.params;
-  const { data, loading, error } = useQuery(GET_POST_BY_ID, {
+  const { data, loading, error, refetch } = useQuery(GET_POST_BY_ID, {
     variables: {
       getPostByIdId: postId,
     },
   });
+
+  const [comment, setComment] = useState("");
+  const [addComment] = useMutation(ADD_COMMENT);
+
+  const handleAddComment = async () => {
+    console.log("Adding comment:", comment);
+    if (!comment.trim()) {
+      Alert.alert("Comment cannot be empty");
+      return;
+    }
+    try {
+      const username = await getSecure("username");
+      if (!username) {
+        Alert.alert("You must be logged in to comment");
+        return;
+      }
+      const result = await addComment({
+        variables: {
+          postId: postId,
+          comment: { content: comment, username: username },
+        },
+      });
+      console.log("Add comment result:", result);
+      Alert.alert("Comment added!", comment);
+      setComment("");
+      await refetch();
+    } catch (err) {
+      Alert.alert("Error adding comment:", err.message);
+      console.error("Error adding comment:", err, err.message);
+    }
+    // navigation.goBack("PostDetail"); // Navigate back to PostDetail screen
+  };
 
   if (loading) {
     return (
@@ -72,93 +114,127 @@ export default function PostDetail({ route }) {
   console.log({ data, loading, error });
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={{ paddingBottom: 32 }}
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={{ flex: 1, backgroundColor: "#000" }}
     >
-      <Image source={{ uri: post.imgUrl }} style={styles.image} />
-      <View style={styles.overlay}>
-        <TouchableOpacity style={styles.saveButton} activeOpacity={0.8}>
-          <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 16 }}>
-            ♥ Like
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.infoContainer}>
-        <Text
-          style={{
-            color: "#fff",
-            fontSize: 22,
-            fontWeight: "bold",
-            marginBottom: 6,
-          }}
-        >
-          {post.content}
-        </Text>
-        <View style={styles.tagsRow}>
-          {post.tags.map((tag, idx) => (
-            <View key={idx} style={styles.tag}>
-              <Text style={styles.tagText}>#{tag}</Text>
-            </View>
-          ))}
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ paddingBottom: 32 }}
+      >
+        <Image source={{ uri: post.imgUrl }} style={styles.image} />
+        <View style={styles.overlay}>
+          <TouchableOpacity style={styles.saveButton} activeOpacity={0.8}>
+            <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 16 }}>
+              ♥ Like
+            </Text>
+          </TouchableOpacity>
         </View>
-        <View style={[styles.userRow, { marginTop: 16 }]}>
-          <Image
-            source={{
-              uri:
-                post.author?.avatarUrl ||
-                "https://ui-avatars.com/api/?name=" +
-                  encodeURIComponent(
-                    post.author?.name || post.author?.username || "User"
-                  ),
+        <View style={styles.infoContainer}>
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 22,
+              fontWeight: "bold",
+              marginBottom: 6,
             }}
-            style={styles.avatar}
-          />
-          <View>
-            <Text style={[styles.username, { color: "#fff" }]}>
-              {post.author?.username || "Unknown"}
-            </Text>
-            <Text style={styles.date}>
-              {new Date(post.createdAt).toLocaleString()}
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            borderTopWidth: 1,
-            borderTopColor: "#222",
-            marginVertical: 18,
-          }}
-        />
-        <Text
-          style={{
-            color: "#fff",
-            fontWeight: "bold",
-            fontSize: 18,
-            marginBottom: 8,
-          }}
-        >
-          Comments ({post.comments.length})
-        </Text>
-        {post.comments.length === 0 ? (
-          <Text style={{ color: "#aaa", fontStyle: "italic" }}>
-            No comments yet.
+          >
+            {post.content}
           </Text>
-        ) : (
-          post.comments.map((c, idx) => (
-            <View key={idx} style={{ marginBottom: 14 }}>
-              <Text style={{ color: "#e60023", fontWeight: "bold" }}>
-                {c.username}
+          <View style={styles.tagsRow}>
+            {post.tags.map((tag, idx) => (
+              <View key={idx} style={styles.tag}>
+                <Text style={styles.tagText}>#{tag}</Text>
+              </View>
+            ))}
+          </View>
+          <View style={[styles.userRow, { marginTop: 16 }]}>
+            <Image
+              source={{
+                uri:
+                  post.author?.avatarUrl ||
+                  "https://ui-avatars.com/api/?name=" +
+                    encodeURIComponent(
+                      post.author?.name || post.author?.username || "User"
+                    ),
+              }}
+              style={styles.avatar}
+            />
+            <View>
+              <Text style={[styles.username, { color: "#fff" }]}>
+                {post.author?.username || "Unknown"}
               </Text>
-              <Text style={{ color: "#fff" }}>{c.content}</Text>
-              <Text style={{ color: "#888", fontSize: 12 }}>
-                {new Date(c.createdAt).toLocaleString()}
+              <Text style={styles.date}>
+                {new Date(post.createdAt).toLocaleString()}
               </Text>
             </View>
-          ))
-        )}
-      </View>
-    </ScrollView>
+          </View>
+          <View
+            style={{
+              borderTopWidth: 1,
+              borderTopColor: "#222",
+              marginVertical: 18,
+            }}
+          />
+          <Text
+            style={{
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: 18,
+              marginBottom: 8,
+            }}
+          >
+            Comments ({post.comments.length})
+          </Text>
+          {/* Input comment */}
+          <View style={{ flexDirection: "row", marginBottom: 16 }}>
+            <TextInput
+              style={{
+                flex: 1,
+                backgroundColor: "#222",
+                color: "#fff",
+                borderRadius: 8,
+                paddingHorizontal: 12,
+                paddingVertical: 8,
+                marginRight: 8,
+              }}
+              placeholder="Add a comment..."
+              placeholderTextColor="#888"
+              value={comment}
+              onChangeText={setComment}
+            />
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#e60023",
+                borderRadius: 8,
+                paddingHorizontal: 16,
+                justifyContent: "center",
+              }}
+              onPress={handleAddComment}
+            >
+              <Text style={{ color: "#fff", fontWeight: "bold" }}>Send</Text>
+            </TouchableOpacity>
+          </View>
+          {post.comments.length === 0 ? (
+            <Text style={{ color: "#aaa", fontStyle: "italic" }}>
+              No comments yet.
+            </Text>
+          ) : (
+            post.comments.map((c, idx) => (
+              <View key={idx} style={{ marginBottom: 14 }}>
+                <Text style={{ color: "#e60023", fontWeight: "bold" }}>
+                  {c.username}
+                </Text>
+                <Text style={{ color: "#fff" }}>{c.content}</Text>
+                <Text style={{ color: "#888", fontSize: 12 }}>
+                  {new Date(c.createdAt).toLocaleString()}
+                </Text>
+              </View>
+            ))
+          )}
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

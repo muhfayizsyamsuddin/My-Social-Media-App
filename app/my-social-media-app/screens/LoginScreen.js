@@ -37,7 +37,9 @@ export default function LoginScreen() {
       // console.log("Login result:", result);
       console.log(result.data.login.access_token);
       const token = result.data?.login.access_token;
+      // const username = result.data?.login.username;
       await setSecure("token", token);
+      await setSecure("username", username);
       setIsSignedIn(true);
     } catch (err) {
       Alert.alert("Login Failed", err?.message);

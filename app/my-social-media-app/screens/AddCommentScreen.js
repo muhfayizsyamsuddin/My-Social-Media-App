@@ -1,39 +1,54 @@
+import { gql, useMutation } from "@apollo/client";
 import React, { useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { KeyboardAvoidingView, TouchableOpacity } from "react-native";
 import { Text, View, TextInput, Button, StyleSheet, Alert } from "react-native";
+
+const ADD_COMMENT = gql`
+  mutation CommentPost($postId: ID!, $comment: CommentInput) {
+    commentPost(postId: $postId, comment: $comment)
+  }
+`;
 
 export default function AddCommentScreen({ route, navigation }) {
   const [comment, setComment] = useState("");
+  const [addComment] = useMutation(ADD_COMMENT);
 
-  // Assume postId is passed via route.params
-  const postId = route?.params?.postId;
-
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
+    console.log("Adding comment:", comment);
+    const result = await addComment({
+      variables: {
+        postId: route.params.postId,
+        comment: { content: comment },
+      },
+    });
+    console.log("Add comment result:", result);
     if (!comment.trim()) {
       Alert.alert("Comment cannot be empty");
       return;
     }
-    // TODO: Replace with your API call or state update logic
-    // Example: await api.addComment(postId, comment);
     Alert.alert("Comment added!", comment);
     setComment("");
-    navigation.goBack();
+
+    navigation.goBack("PostDetail"); // Navigate back to PostDetail screen
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Add a Comment</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Write your comment..."
-        value={comment}
-        onChangeText={setComment}
-        multiline
-      />
-      <TouchableOpacity style={styles.button} onPress={handleAddComment}>
-        <Text style={styles.buttonText}>Post Comment</Text>
-      </TouchableOpacity>
-    </View>
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Add a Comment</Text>
+        <TextInput
+          onPress={handleAddComment}
+          style={styles.input}
+          placeholder="Write your comment..."
+          value={comment}
+          onChangeText={setComment}
+          multiline
+        />
+        <TouchableOpacity style={styles.button} onPress={handleAddComment}>
+          <Text style={styles.buttonText}>Post Comment</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
