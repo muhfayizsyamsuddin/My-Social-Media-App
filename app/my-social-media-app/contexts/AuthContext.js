@@ -7,12 +7,17 @@ export const AuthContext = createContext(false);
 export default function AuthProvider({ children }) {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
     async function checkToken() {
       const token = await getSecure("token");
+      const userId = await getSecure("_id"); // Ambil userId juga
       if (token) {
         setIsSignedIn(true);
+      }
+      if (userId) {
+        setCurrentUserId(userId);
       }
       setLoading(false);
     }
@@ -28,6 +33,10 @@ export default function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext value={{ isSignedIn, setIsSignedIn }}>{children}</AuthContext>
+    <AuthContext
+      value={{ isSignedIn, setIsSignedIn, currentUserId, setCurrentUserId }}
+    >
+      {children}
+    </AuthContext>
   );
 }

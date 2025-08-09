@@ -30,6 +30,7 @@ const typeDefs = `#graphql
   type LoginResponse {
     access_token: String
     message: String
+    userId: ID
   }
   # input FollowInput {
   #   followerId: ID
@@ -114,6 +115,7 @@ const resolvers = {
       return {
         access_token,
         message: "Login successful",
+        userId: user._id,
       };
     },
   },

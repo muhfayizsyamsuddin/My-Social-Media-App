@@ -6,6 +6,7 @@ import BottomTabs from "./BottomTab";
 import PostDetail from "../screens/PostDetail";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import UserProfile from "../screens/UserProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +42,7 @@ export default function RootStack() {
             component={BottomTabs}
           />
           <Stack.Screen name="PostDetail" component={PostDetail} />
+          <Stack.Screen name="UserProfile" component={UserProfile} />
         </>
       ) : (
         <>

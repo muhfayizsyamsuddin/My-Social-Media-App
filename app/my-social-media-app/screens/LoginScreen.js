@@ -12,6 +12,7 @@ const LOGIN = gql`
     login(userLogin: $userLogin) {
       access_token
       message
+      userId
     }
   }
 `;
@@ -23,6 +24,7 @@ export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  // const [userId, setUserId] = useState("");
 
   const [login, { error }] = useMutation(LOGIN);
 
@@ -37,8 +39,10 @@ export default function LoginScreen() {
       // console.log("Login result:", result);
       console.log(result.data.login.access_token);
       const token = result.data?.login.access_token;
+      const userId = result.data.login.userId;
       // const username = result.data?.login.username;
       await setSecure("token", token);
+      await setSecure("_id", userId);
       await setSecure("username", username);
       setIsSignedIn(true);
     } catch (err) {

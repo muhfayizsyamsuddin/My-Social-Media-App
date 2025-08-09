@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Text, View } from "react-native";
+import { AuthContext } from "../contexts/AuthContext";
 
 const SEARCH_USERS = gql`
   query SearchUsers($keyword: String!) {
@@ -22,9 +23,10 @@ const SEARCH_USERS = gql`
 
 export default function SearchScreen() {
   const navigation = useNavigation();
+  // const { isSignedIn } = useContext(AuthContext);
   const [keyword, setKeyword] = useState("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
-  // const [results, setResults] = React.useState([]);
+  const { currentUserId } = useContext(AuthContext);
 
   // debounce input 500ms
   useEffect(() => {
@@ -42,8 +44,13 @@ export default function SearchScreen() {
   const results = data?.searchUsers || [];
   console.log(results, "results");
 
-  const handlePressUser = (username) => {
-    navigation.navigate("ProfileScreen", { username });
+  const handlePressUser = (userId) => {
+    console.log("Pressed user ID:", userId);
+    if (userId === currentUserId) {
+      navigation.navigate("ProfileScreen"); // tab profil user sendiri
+    } else {
+      navigation.navigate("UserProfile", { userId });
+    }
   };
 
   const isDark = true;
@@ -114,7 +121,7 @@ export default function SearchScreen() {
 
       <FlatList
         data={results}
-        keyExtractor={(item) => item.username}
+        keyExtractor={(item) => item._id}
         numColumns={2}
         columnWrapperStyle={{
           justifyContent: "space-between",
@@ -122,7 +129,7 @@ export default function SearchScreen() {
         }}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => handlePressUser(item.username)}
+            onPress={() => handlePressUser(item._id)}
             style={{
               flex: 1,
               marginHorizontal: 3,
