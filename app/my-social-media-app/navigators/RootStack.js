@@ -7,6 +7,7 @@ import PostDetail from "../screens/PostDetail";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import UserProfile from "../screens/UserProfile";
+import FollowListScreen from "../screens/FollowListScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,7 +43,8 @@ export default function RootStack() {
             component={BottomTabs}
           />
           <Stack.Screen name="PostDetail" component={PostDetail} />
-          <Stack.Screen name="UserProfile" component={UserProfile} />
+          <Stack.Screen name="User Profile" component={UserProfile} />
+          <Stack.Screen name="Follow List" component={FollowListScreen} />
         </>
       ) : (
         <>

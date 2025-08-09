@@ -64,16 +64,17 @@ export default function RegisterScreen() {
       <View
         style={{
           flex: 1,
-          justifyContent: "center",
+          // justifyContent: "center",
           alignItems: "center",
           padding: 24,
+          marginVertical: 40,
         }}
       >
         <View
           style={{
             width: "100%",
             maxWidth: 360,
-            backgroundColor: "#1e1e1e",
+            backgroundColor: "#1A1A1A",
             borderRadius: 16,
             padding: 28,
             shadowColor: "#000",
@@ -153,7 +154,7 @@ export default function RegisterScreen() {
             onPress={handleRegister}
             disabled={loading}
             style={{
-              backgroundColor: loading ? "#333" : "#1976d2",
+              backgroundColor: loading ? "#333" : "#E60023",
               paddingVertical: 14,
               borderRadius: 8,
               alignItems: "center",
@@ -218,5 +219,6 @@ const styles = {
     marginBottom: 14,
     paddingHorizontal: 12,
     backgroundColor: "#000",
+    color: "#fff",
   },
 };

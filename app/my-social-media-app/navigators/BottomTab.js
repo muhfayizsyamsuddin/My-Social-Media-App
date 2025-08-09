@@ -95,7 +95,7 @@ export default function BottomTabs() {
           }}
           component={AddPostScreen}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="AddComment"
           options={{
             title: "Add Comment",
@@ -104,7 +104,7 @@ export default function BottomTabs() {
             headerTitleStyle: { fontWeight: "bold" },
           }}
           component={AddCommentScreen}
-        />
+        /> */}
         <Tab.Screen
           name="Profile"
           options={{

@@ -47,6 +47,7 @@ export default function LoginScreen() {
       setIsSignedIn(true);
     } catch (err) {
       Alert.alert("Login Failed", err?.message);
+      setLoading(false);
     }
   };
 
@@ -58,9 +59,10 @@ export default function LoginScreen() {
       <View
         style={{
           flex: 1,
-          justifyContent: "center",
+          // justifyContent: "center",
           alignItems: "center",
           padding: 24,
+          marginVertical: 80,
         }}
       >
         <Text
@@ -72,7 +74,7 @@ export default function LoginScreen() {
             letterSpacing: 1,
           }}
         >
-          Login
+          Welcome Back
         </Text>
         <View style={{ width: "100%", marginBottom: 20 }}>
           <Text style={{ marginBottom: 8, color: "#d1d5db", fontSize: 16 }}>
@@ -109,7 +111,7 @@ export default function LoginScreen() {
           style={{
             width: "100%",
             height: 50,
-            backgroundColor: loading ? "#60a5fa" : "#2563eb",
+            backgroundColor: loading ? "#333" : "#E60023",
             borderRadius: 12,
             justifyContent: "center",
             alignItems: "center",
