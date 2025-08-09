@@ -1,67 +1,204 @@
-import React from "react";
-import { TextInput } from "react-native";
+import { gql, useQuery } from "@apollo/client";
+import { useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  StatusBar,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { Text, View } from "react-native";
 
-export default function SearchScreen() {
-  const [query, setQuery] = React.useState("");
-  const [results, setResults] = React.useState([]);
+const SEARCH_USERS = gql`
+  query SearchUsers($keyword: String!) {
+    searchUsers(keyword: $keyword) {
+      _id
+      username
+      name
+    }
+  }
+`;
 
-  const handleSearch = () => {
-    // Dummy search logic, replace with API call
-    // Example: fetch users whose name includes the query
-    const dummyUsers = [
-      { id: 1, name: "Alice" },
-      { id: 2, name: "Bob" },
-      { id: 3, name: "Charlie" },
-      { id: 4, name: "David" },
-    ];
-    const filtered = dummyUsers.filter((user) =>
-      user.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setResults(filtered);
+export default function SearchScreen() {
+  const navigation = useNavigation();
+  const [keyword, setKeyword] = useState("");
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
+  // const [results, setResults] = React.useState([]);
+
+  // debounce input 500ms
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(keyword);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [keyword]);
+
+  const { data, loading, error } = useQuery(SEARCH_USERS, {
+    variables: { keyword: debouncedKeyword },
+    skip: !debouncedKeyword,
+  });
+  console.log({ loading, error, data });
+  const results = data?.searchUsers || [];
+  console.log(results, "results");
+
+  const handlePressUser = (username) => {
+    navigation.navigate("ProfileScreen", { username });
+  };
+
+  const isDark = true;
+
+  const colors = {
+    background: isDark ? "#000" : "#fff",
+    text: isDark ? "#fff" : "#222",
+    inputBg: isDark ? "#000" : "#F3F3F3",
+    inputText: isDark ? "#fff" : "#000",
+    placeholder: isDark ? "#aaa" : "#888",
+    cardBg: isDark ? "#000" : "#fff",
+    border: isDark ? "#ccc" : "#F3F3F3",
+    accent: "#fff",
+    shadow: "#000",
+    error: "#f00",
+    secondaryText: isDark ? "#aaa" : "#888",
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#000" }}>
-      <View style={{ flex: 1, padding: 16 }}>
-        <View style={{ flexDirection: "row", marginBottom: 16 }}>
-          <TextInput
+    <View style={{ flex: 1, padding: 16, backgroundColor: colors.background }}>
+      <StatusBar
+        barStyle={isDark ? "light-content" : "dark-content"}
+        backgroundColor={colors.background}
+      />
+      <TextInput
+        placeholder="Search users..."
+        placeholderTextColor={colors.placeholder}
+        autoCapitalize="none"
+        autoCorrect={false}
+        value={keyword}
+        onChangeText={setKeyword}
+        keyboardAppearance={isDark ? "dark" : "light"}
+        style={{
+          borderWidth: 1,
+          borderRadius: 15,
+          padding: 12,
+          marginBottom: 16,
+          color: colors.inputText,
+          backgroundColor: colors.inputBg,
+          fontSize: 16,
+          shadowColor: colors.shadow,
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          elevation: 2,
+          marginTop: 10,
+          marginHorizontal: 4,
+          fontWeight: "500",
+          borderColor: "#ccc",
+          shadowOffset: { width: 0, height: 0 },
+        }}
+      />
+
+      {loading && (
+        <ActivityIndicator
+          size="large"
+          color={colors.accent}
+          style={{ marginVertical: 24 }}
+        />
+      )}
+
+      {error && (
+        <Text
+          style={{ color: colors.error, textAlign: "center", marginBottom: 12 }}
+        >
+          Something went wrong!
+        </Text>
+      )}
+
+      <FlatList
+        data={results}
+        keyExtractor={(item) => item.username}
+        numColumns={2}
+        columnWrapperStyle={{
+          justifyContent: "space-between",
+          marginBottom: 8,
+        }}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => handlePressUser(item.username)}
             style={{
               flex: 1,
+              marginHorizontal: 3,
+              backgroundColor: colors.cardBg,
+              borderRadius: 14,
+              paddingVertical: 12,
+              paddingHorizontal: 8,
+              marginBottom: 4,
+              shadowColor: colors.shadow,
+              shadowOpacity: 0.06,
+              shadowRadius: 4,
+              elevation: 1,
+              alignItems: "center",
               borderWidth: 1,
-              borderColor: "#ccc",
-              borderRadius: 8,
-              paddingHorizontal: 12,
-              height: 40,
-              backgroundColor: "#fff",
+              borderColor: colors.border,
             }}
-            placeholder="Search users"
-            value={query}
-            onChangeText={setQuery}
-            onSubmitEditing={handleSearch}
-            returnKeyType="search"
-          />
-        </View>
-        <View>
-          {results.map((user) => (
-            <View
-              key={user.id}
+            activeOpacity={0.85}
+          >
+            <View style={{ alignItems: "center" }}>
+              <View
+                style={{
+                  backgroundColor: "#fff", // avatar putih
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: 6,
+                }}
+              >
+                <Text
+                  style={{
+                    color: colors.accent,
+                    fontWeight: "bold",
+                    fontSize: 18,
+                  }} // teks merah
+                >
+                  {item.name
+                    ? item.name[0].toUpperCase()
+                    : item.username[0].toUpperCase()}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontWeight: "600",
+                  fontSize: 14,
+                  color: colors.text,
+                  textAlign: "center",
+                }}
+              >
+                {item.name}
+              </Text>
+              <Text
+                style={{ color: colors.accent, fontSize: 12, marginTop: 2 }}
+              >
+                @{item.username}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        ListEmptyComponent={
+          !loading && debouncedKeyword ? (
+            <Text
               style={{
-                padding: 12,
-                borderBottomWidth: 1,
-                borderBottomColor: "#eee",
+                textAlign: "center",
+                marginTop: 32,
+                color: colors.secondaryText,
+                fontSize: 16,
               }}
             >
-              <Text style={{ fontSize: 18, color: "#fff" }}>{user.name}</Text>
-            </View>
-          ))}
-          {results.length === 0 && (
-            <Text style={{ textAlign: "center", color: "#888" }}>
-              No users found
+              No users found for "{debouncedKeyword}"
             </Text>
-          )}
-        </View>
-      </View>
+          ) : null
+        }
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 }
