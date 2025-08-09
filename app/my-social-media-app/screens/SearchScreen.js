@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Text, View } from "react-native";
 import { AuthContext } from "../contexts/AuthContext";
+import { getSecure } from "../helpers/SecureStore";
 
 const SEARCH_USERS = gql`
   query SearchUsers($keyword: String!) {
@@ -23,10 +24,23 @@ const SEARCH_USERS = gql`
 
 export default function SearchScreen() {
   const navigation = useNavigation();
-  // const { isSignedIn } = useContext(AuthContext);
+
   const [keyword, setKeyword] = useState("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
-  const { currentUserId } = useContext(AuthContext);
+  const { currentUserId: contextUserId } = useContext(AuthContext);
+  const [currentUserId, setCurrentUserId] = useState(contextUserId || null);
+
+  // Fallback load user ID dari SecureStore kalau AuthContext belum siap
+  useEffect(() => {
+    if (!contextUserId) {
+      (async () => {
+        const storedId = await getSecure("_id");
+        if (storedId) setCurrentUserId(storedId);
+      })();
+    } else {
+      setCurrentUserId(contextUserId);
+    }
+  }, [contextUserId]);
 
   // debounce input 500ms
   useEffect(() => {
@@ -40,13 +54,21 @@ export default function SearchScreen() {
     variables: { keyword: debouncedKeyword },
     skip: !debouncedKeyword,
   });
-  console.log({ loading, error, data });
+  // console.log({ loading, error, data });
   const results = data?.searchUsers || [];
   console.log(results, "results");
-
+  // if (!currentUserId) {
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+  //       <Text style={{ color: "red" }}>Loading user info...</Text>
+  //     </View>
+  //   );
+  // }
   const handlePressUser = (userId) => {
-    console.log("Pressed user ID:", userId);
-    console.log("Current userId:", currentUserId);
+    if (!currentUserId) {
+      console.warn("User ID belum siap, tidak bisa navigasi");
+      return;
+    }
     if (userId === currentUserId) {
       navigation.navigate("Profile"); // tab profil user sendiri
     } else {
@@ -69,6 +91,18 @@ export default function SearchScreen() {
     error: "#f00",
     secondaryText: isDark ? "#aaa" : "#888",
   };
+
+  // Tampilkan loading sementara nunggu currentUserId
+  if (!currentUserId) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color={colors.accent} />
+        <Text style={{ color: colors.secondaryText, marginTop: 8 }}>
+          Loading user info...
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1, padding: 16, backgroundColor: colors.background }}>

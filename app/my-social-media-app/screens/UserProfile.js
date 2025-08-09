@@ -36,34 +36,53 @@ const FOLLOW_USER = gql`
 
 export default function UserProfile({ route }) {
   const { userId } = route.params;
-  const { setIsSignedIn } = useContext(AuthContext);
-  const [currentUserId, setCurrentUserId] = useState(userId || null);
+  const { currentUserId: loggedInUserId } = useContext(AuthContext);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
   // Kalau userId tidak ada di params, ambil dari SecureStore
   useEffect(() => {
-    if (!userId) {
+    if (loggedInUserId) {
+      setCurrentUserId(loggedInUserId);
+    } else {
       (async () => {
         const storedId = await getSecure("_id");
         setCurrentUserId(storedId);
       })();
     }
-  }, [userId]);
+  }, [loggedInUserId]);
 
   const { data, loading, error, refetch } = useQuery(GET_USER_PROFILE, {
-    variables: { getUserByIdId: currentUserId },
-    skip: !currentUserId, // Skip query if userId is not set
+    variables: { getUserByIdId: userId },
+    skip: !userId, // Skip query if userId is not set
     fetchPolicy: "network-only",
   });
 
-  const [followUser] = useMutation(FOLLOW_USER);
   useEffect(() => {
     if (data?.getUserById && currentUserId) {
       const followers = data.getUserById.followers || [];
       setIsFollowing(followers.some((f) => f._id === currentUserId));
     }
   }, [data, currentUserId]);
-  console.log("User ID:", userId);
-  console.log("Query Data:", data);
+
+  const [followUser] = useMutation(FOLLOW_USER);
+  const handleFollow = async () => {
+    try {
+      const result = await followUser({
+        variables: {
+          followInput: {
+            // userId: currentUserId,
+            followingId: user._id,
+          },
+        },
+      });
+      console.log("Follow user result:", result);
+      await refetch(); // Refetch to update the followers list
+      Alert.alert("Success", "You are now following this user.");
+    } catch (error) {
+      console.error("Error following user:", error);
+      Alert.alert("Error", "Failed to follow user.");
+    }
+  };
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -79,8 +98,14 @@ export default function UserProfile({ route }) {
       </View>
     );
   }
+  if (!data?.getUserById) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ color: "white" }}>User not found</Text>
+      </View>
+    );
+  }
   const user = data?.getUserById;
-  console.log("User data:", user);
 
   if (!user) {
     return (
@@ -89,24 +114,6 @@ export default function UserProfile({ route }) {
       </View>
     );
   }
-
-  const handleFollow = async () => {
-    try {
-      await followUser({
-        variables: {
-          followInput: {
-            userId: currentUserId,
-            followId: user._id,
-          },
-        },
-      });
-      await refetch(); // Refetch to update the followers list
-      Alert.alert("Success", "You are now following this user.");
-    } catch (error) {
-      console.error("Error following user:", error);
-      Alert.alert("Error", "Failed to follow user.");
-    }
-  };
 
   return (
     <View

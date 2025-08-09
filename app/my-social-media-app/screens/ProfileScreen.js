@@ -23,8 +23,8 @@ const GET_USER_PROFILE = gql`
 `;
 
 export default function ProfileScreen({ route }) {
-  const { setIsSignedIn } = useContext(AuthContext);
-  const { currentUserId } = useContext(AuthContext);
+  const { setIsSignedIn, setCurrentUserId } = useContext(AuthContext);
+  // const { currentUserId } = useContext(AuthContext);
   const [userId, setUserId] = useState(route.params?.userId || null);
   // Kalau userId tidak ada di params, ambil dari SecureStore
   useEffect(() => {
@@ -146,6 +146,7 @@ export default function ProfileScreen({ route }) {
           await deleteSecure("_id");
           await deleteSecure("token");
           setIsSignedIn(false);
+          setCurrentUserId(null); // Reset currentUserId on logout
         }}
         style={{
           backgroundColor: "#e60023",
