@@ -25,9 +25,7 @@ const GET_USER_PROFILE = gql`
 export default function ProfileScreen({ route }) {
   const { setIsSignedIn } = useContext(AuthContext);
   const { currentUserId } = useContext(AuthContext);
-  const [userId, setUserId] = useState(
-    route.params?.userId || currentUserId || null
-  );
+  const [userId, setUserId] = useState(route.params?.userId || null);
   // Kalau userId tidak ada di params, ambil dari SecureStore
   useEffect(() => {
     if (!userId) {
@@ -145,8 +143,8 @@ export default function ProfileScreen({ route }) {
       <TouchableOpacity
         onPress={async () => {
           console.log("Logout Pressed");
-          await deleteSecure("token");
           await deleteSecure("_id");
+          await deleteSecure("token");
           setIsSignedIn(false);
         }}
         style={{

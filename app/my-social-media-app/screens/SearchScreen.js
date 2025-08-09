@@ -46,8 +46,9 @@ export default function SearchScreen() {
 
   const handlePressUser = (userId) => {
     console.log("Pressed user ID:", userId);
+    console.log("Current userId:", currentUserId);
     if (userId === currentUserId) {
-      navigation.navigate("ProfileScreen"); // tab profil user sendiri
+      navigation.navigate("Profile"); // tab profil user sendiri
     } else {
       navigation.navigate("UserProfile", { userId });
     }
