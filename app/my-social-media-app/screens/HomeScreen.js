@@ -6,13 +6,15 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   StatusBar,
 } from "react-native";
-import React, { useCallback, useEffect } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useCallback, useContext, useEffect } from "react";
 import PostCard from "../components/PostCard";
 import { gql, useQuery } from "@apollo/client";
 import { Ionicons } from "@expo/vector-icons";
+import { AuthContext } from "../contexts/AuthContext";
+import { deleteSecure } from "../helpers/SecureStore";
 
 const GET_POSTS = gql`
   query GetPosts {
@@ -46,16 +48,30 @@ const GET_POSTS = gql`
 `;
 
 export default function HomeScreen() {
+  const { isSignedIn, setIsSignedIn } = useContext(AuthContext);
   const { loading, error, data, refetch } = useQuery(GET_POSTS, {
     fetchPolicy: "network-only",
+    skip: !isSignedIn, // Skip the query if the user is not signed in
   });
   console.log({ loading, error, data });
   const navigation = useNavigation();
   // await refetch();
+  useEffect(() => {
+    if (error && error.message.includes("logged in")) {
+      (async () => {
+        await deleteSecure("token");
+        await deleteSecure("_id");
+        setIsSignedIn(false); // Memaksa Navigasi Pindah ke LoginScreen!
+      })();
+    }
+  }, [error, setIsSignedIn]);
+
   useFocusEffect(
     useCallback(() => {
-      refetch();
-    }, [refetch])
+      if (isSignedIn) {
+        refetch();
+      }
+    }, [refetch, isSignedIn])
   );
   // useEffect(() => {
   //   refetch();
@@ -103,16 +119,34 @@ export default function HomeScreen() {
     );
   }
 
+  if (!data?.getPosts || data.getPosts.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor="#0A0A0A" />
+
+        <View style={styles.header}>
+          <Text style={styles.headerSubtitle}>Discover amazing content</Text>
+        </View>
+
+        <View style={styles.emptyContainer}>
+          <Ionicons name="newspaper-outline" size={48} color="#404040" />
+          <Text style={styles.emptyTitle}>No Posts Yet</Text>
+          <Text style={styles.emptyText}>
+            Be the first to share something awesome!
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0A0A0A" />
 
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerSubtitle}>Discover amazing content</Text>
       </View>
 
-      {/* Posts Content */}
       <View style={styles.content}>
         <PostCard posts={data?.getPosts} />
       </View>

@@ -7,9 +7,9 @@ import {
   StatusBar,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
   Dimensions,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "react-native";
 import { AuthContext } from "../contexts/AuthContext";
 import { getSecure } from "../helpers/SecureStore";

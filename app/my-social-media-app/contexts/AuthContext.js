@@ -33,10 +33,10 @@ export default function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext
+    <AuthContext.Provider
       value={{ isSignedIn, setIsSignedIn, currentUserId, setCurrentUserId }}
     >
       {children}
-    </AuthContext>
+    </AuthContext.Provider>
   );
 }

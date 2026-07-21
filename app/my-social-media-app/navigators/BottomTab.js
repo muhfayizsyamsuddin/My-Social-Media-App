@@ -5,7 +5,8 @@ import HomeScreen from "../screens/HomeScreen";
 import SearchScreen from "../screens/SearchScreen";
 import AddPostScreen from "../screens/AddPostScreen";
 import AddCommentScreen from "../screens/AddCommentScreen";
-import { SafeAreaView, StatusBar } from "react-native";
+import { StatusBar } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Tab = createBottomTabNavigator();
 

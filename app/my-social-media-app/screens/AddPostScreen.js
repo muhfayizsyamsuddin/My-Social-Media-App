@@ -7,11 +7,11 @@ import {
   KeyboardAvoidingView,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
   StatusBar,
   ScrollView,
   Dimensions,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 

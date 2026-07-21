@@ -3,13 +3,14 @@ import { setContext } from "@apollo/client/link/context";
 import { getSecure } from "../helpers/SecureStore";
 
 const httpLink = createHttpLink({
-  uri: "https://api.faizms.com/",
+  uri: "https://api-mysosmed.faizms.com/",
 });
 
 const authLink = setContext(async (_, { headers }) => {
   // get the authentication token from local storage if it exists
   const token = await getSecure("token");
   // return the headers to the context so httpLink can read them
+  console.log("TOKEN =", token);
   return {
     headers: {
       ...headers,

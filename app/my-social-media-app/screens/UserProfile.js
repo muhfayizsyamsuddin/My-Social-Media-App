@@ -6,10 +6,10 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
   StatusBar,
   Dimensions,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../contexts/AuthContext";
 import { deleteSecure, getSecure } from "../helpers/SecureStore";
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -46,7 +46,7 @@ const FOLLOW_USER = gql`
 `;
 
 export default function UserProfile({ route }) {
-  const { userId } = route.params;
+  const { userId } = route.params?.userId || currentUserId;
   const { currentUserId: loggedInUserId } = useContext(AuthContext);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -95,6 +95,17 @@ export default function UserProfile({ route }) {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await deleteSecure("token");
+      await deleteSecure("_id");
+      await client.clearStore();
+      setIsSignedIn(false); // Otomatis balik ke LoginScreen!
+    } catch (e) {
+      console.error("Logout Error:", e);
+    }
+  };
+
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -113,10 +124,22 @@ export default function UserProfile({ route }) {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" backgroundColor="#0A0A0A" />
+        {/* <View style={styles.errorContainer}>
+          <Text style={styles.errorIcon}>⚠️</Text>
+          <Text style={styles.errorTitle}>Oops! Something went wrong</Text>
+          <Text style={styles.errorText}>Unable to load this profile</Text>
+        </View> */}
         <View style={styles.errorContainer}>
           <Text style={styles.errorIcon}>⚠️</Text>
           <Text style={styles.errorTitle}>Oops! Something went wrong</Text>
           <Text style={styles.errorText}>Unable to load this profile</Text>
+          
+          <TouchableOpacity 
+            onPress={handleLogout} 
+            style={[styles.followButton, { marginTop: 20, backgroundColor: "#E60023", paddingHorizontal: 30 }]}
+          >
+            <Text style={styles.notFollowingButtonText}>Back to Login</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -217,7 +240,7 @@ export default function UserProfile({ route }) {
           </View>
 
           {/* Follow Button */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={handleFollow}
             disabled={isFollowing}
             style={[
@@ -235,7 +258,28 @@ export default function UserProfile({ route }) {
             >
               {isFollowing ? "✓ Following" : "Follow"}
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          {isOwnProfile ? (
+            <TouchableOpacity
+              onPress={handleLogout}
+              style={[styles.followButton, { backgroundColor: "#333333" }]}
+            >
+              <Text style={styles.notFollowingButtonText}>Logout</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={handleFollow}
+              disabled={isFollowing}
+              style={[
+                styles.followButton,
+                isFollowing ? styles.followingButton : styles.notFollowingButton,
+              ]}
+            >
+              <Text style={styles.followButtonText}>
+                {isFollowing ? "✓ Following" : "Follow"}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Additional Info */}

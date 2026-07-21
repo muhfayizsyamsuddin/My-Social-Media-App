@@ -44,6 +44,7 @@ export default function LoginScreen() {
       await setSecure("token", token);
       await setSecure("_id", userId);
       await setSecure("username", username);
+      setCurrentUserId(userId);//!
       setIsSignedIn(true);
     } catch (err) {
       Alert.alert("Login Failed", err?.message);
