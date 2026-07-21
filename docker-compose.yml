@@ -6,8 +6,6 @@ services:
     image: faizms14/my-social-media-app-server:v1.0
     env_file: .env
     container_name: my-social-media-app-server
-    # ports:
-    #   - 80:80
     environment:
       - MONGO_URI=mongodb://my-social-media-app-user:my-social-media-app-password888@my-social-media-app-db/my-social-media-app-db?authSource=admin
       - REDIS_URL=redis://redis:6379
