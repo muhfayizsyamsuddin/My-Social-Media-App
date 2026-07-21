@@ -45,6 +45,6 @@ jobs:
                 script: |
                   mkdir -p ~/project/mysosmed/server
                   cd ~/project/mysosmed/server
-                  echo ${{ vars.APP_COMPOSE }} | base64 -d > docker-compose.yml
+                  echo ${{ vars.APP_COMPOSE }} | base64 --decode > docker-compose.yml
                   docker compose pull
                   docker compose up -d
