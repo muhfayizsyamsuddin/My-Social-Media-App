@@ -17,9 +17,9 @@ const server = new ApolloServer({
 startStandaloneServer(server, {
   listen: { port: process.env.PORT || 3000 },
   context: async ({ req }) => {
+    console.log("Authorization Header:", req.headers.authorization);
     return {
       auth: async () => {
-        console.log("Authorization Header:", req.headers.authorization);
         const authentication = req.headers.authorization;
         if (!authentication) {
           throw new Error("You must be logged in to perform this action");
