@@ -25,7 +25,7 @@ jobs:
             
             - name: Build Docker image
               run: |
-                docker build -t ${{ secrets.DOCKER_USERNAME }}/my-social-media-app-server:v1.0 ./Server
+                docker build -t ${{ secrets.DOCKER_USERNAME }}/my-social-media-app-server:v1.0 ./server
 
             - name: Push Docker image
               run: |
