@@ -19,6 +19,7 @@ startStandaloneServer(server, {
   context: async ({ req }) => {
     return {
       auth: async () => {
+        console.log("Authorization Header:", req.headers.authorization);
         const authentication = req.headers.authorization;
         if (!authentication) {
           throw new Error("You must be logged in to perform this action");
