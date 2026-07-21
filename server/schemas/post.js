@@ -58,6 +58,7 @@ const resolvers = {
     getPosts: async (_, __, { auth }) => {
       await auth();
       const postsCache = await redis.get("posts");
+      console.log("CACHE =", postsCache);
       if (postsCache) {
         console.log("masuk cached ");
         return JSON.parse(postsCache);
