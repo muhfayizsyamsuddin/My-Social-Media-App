@@ -10,7 +10,7 @@ const authLink = setContext(async (_, { headers }) => {
   // get the authentication token from local storage if it exists
   const token = await getSecure("token");
   // return the headers to the context so httpLink can read them
-  console.log("TOKEN =", token);
+  // console.log("TOKEN =", token);
   return {
     headers: {
       ...headers,

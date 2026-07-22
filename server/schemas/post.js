@@ -57,16 +57,16 @@ const resolvers = {
   Query: {
     getPosts: async (_, __, { auth }) => {
       await auth();
-      // const postsCache = await redis.get("posts");
-      // console.log("CACHE =", postsCache);
-      // if (postsCache) {
-      //   console.log("masuk cached ");
-      //   return JSON.parse(postsCache);
-      // }
+      const postsCache = await redis.get("posts");
+      console.log("CACHE =", postsCache);
+      if (postsCache) {
+        console.log("masuk cached ");
+        return JSON.parse(postsCache);
+      }
 
       const posts = await PostModel.getAllPosts();
       console.log("masuk mongodb");
-      // await redis.set("posts", JSON.stringify(posts));
+      await redis.set("posts", JSON.stringify(posts));
       return posts;
     },
     getPostById: async (_, { id }, { auth }) => {

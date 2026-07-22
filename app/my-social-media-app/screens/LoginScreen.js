@@ -19,7 +19,7 @@ const LOGIN = gql`
 
 export default function LoginScreen() {
   const navigation = useNavigation();
-  const { setIsSignedIn } = useContext(AuthContext);
+  const { setIsSignedIn, setCurrentUserId } = useContext(AuthContext);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
