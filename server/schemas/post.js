@@ -67,6 +67,7 @@ const resolvers = {
       const posts = await PostModel.getAllPosts();
       console.log("masuk mongodb");
       await redis.set("posts", JSON.stringify(posts));
+      console.log("BERHASIL SIMPAN KE REDIS");
       return posts;
     },
     getPostById: async (_, { id }, { auth }) => {
