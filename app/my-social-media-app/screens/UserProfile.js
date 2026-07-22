@@ -69,6 +69,9 @@ console.log("userId =", userId);
     skip: !userId, // Skip query if userId is not set
     fetchPolicy: "network-only",
   });
+  console.log("loading =", loading);
+console.log("error =", error);
+console.log("data =", data);
 
   useEffect(() => {
     if (data?.getUserById && currentUserId) {
@@ -84,7 +87,7 @@ console.log("userId =", userId);
         variables: {
           followInput: {
             // userId: currentUserId,
-            followingId: user._id,
+            followingId: data?.getUserById?._id,
           },
         },
       });
@@ -162,6 +165,10 @@ console.log("userId =", userId);
     );
   }
   const user = data?.getUserById;
+  console.log("USER =", user);
+console.log("currentUserId =", currentUserId);
+console.log("isOwnProfile =", isOwnProfile);
+  const isOwnProfile = user?._id === currentUserId;
 
   if (!user) {
     return (
