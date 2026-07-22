@@ -61,6 +61,7 @@ class PostModel {
 
   static async getAllPosts() {
     // return await this.collection().find().toArray();
+    console.log("============= VERSION BARU =============");
     const agg = [
       {
         $lookup: {

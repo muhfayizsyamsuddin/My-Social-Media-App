@@ -7,8 +7,7 @@ services:
     env_file: .env
     container_name: my-social-media-app-server
     environment:
-      - MONGO_URI=mongodb://my-social-media-app-user:my-social-media-app-password888@my-social-media-app-db/my-social-media-app-db?authSource=admin
-      - REDIS_URL=redis://redis:6379
+    - REDIS_URL=redis://redis:6379
     networks:
       - proxy_net
       - my-social-media-app-net
