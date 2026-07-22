@@ -57,17 +57,20 @@ const resolvers = {
   Query: {
     getPosts: async (_, __, { auth }) => {
       await auth();
+
       const postsCache = await redis.get("posts");
-      console.log("CACHE =", postsCache);
+      console.log("CACHE =", postsCache ? "ADA" : "KOSONG");
+
       if (postsCache) {
-        console.log("masuk cached ");
+        console.log("🔥 MASUK REDIS");
         return JSON.parse(postsCache);
       }
+       console.log("📦 MASUK MONGODB");
 
       const posts = await PostModel.getAllPosts();
-      console.log("masuk mongodb");
+      // console.log("masuk mongodb");
       await redis.set("posts", JSON.stringify(posts));
-      console.log("BERHASIL SIMPAN KE REDIS");
+      // console.log("BERHASIL SIMPAN KE REDIS");
       return posts;
     },
     getPostById: async (_, { id }, { auth }) => {
