@@ -46,7 +46,9 @@ const FOLLOW_USER = gql`
 `;
 
 export default function UserProfile({ route }) {
-  const { userId } = route.params?.userId || currentUserId;
+  const { userId } = route.params;
+  console.log("route.params =", route.params);
+console.log("userId =", userId);
   const { currentUserId: loggedInUserId } = useContext(AuthContext);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);

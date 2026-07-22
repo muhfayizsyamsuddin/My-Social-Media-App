@@ -60,8 +60,6 @@ class PostModel {
   }
 
   static async getAllPosts() {
-    // return await this.collection().find().toArray();
-    console.log("============= VERSION BARU =============");
     const agg = [
       {
         $lookup: {
@@ -87,7 +85,6 @@ class PostModel {
       },
     ];
     const result = await this.collection().aggregate(agg).toArray();
-    console.log("🚀 ~ PostModel ~ getAllPosts ~ result:", result);
     return result;
   }
 

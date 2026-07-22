@@ -59,13 +59,13 @@ const resolvers = {
       await auth();
 
       const postsCache = await redis.get("posts");
-      console.log("CACHE =", postsCache ? "ADA" : "KOSONG");
+      // console.log("CACHE =", postsCache ? "ADA" : "KOSONG");
 
       if (postsCache) {
-        console.log("🔥 MASUK REDIS");
+        // console.log("🔥 MASUK REDIS");
         return JSON.parse(postsCache);
       }
-       console.log("📦 MASUK MONGODB");
+      //  console.log("📦 MASUK MONGODB");
 
       const posts = await PostModel.getAllPosts();
       // console.log("masuk mongodb");
