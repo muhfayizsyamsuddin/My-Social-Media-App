@@ -173,7 +173,7 @@ export default function PostDetail({ route }) {
   }
 
   const post = data?.getPostById;
-  console.log({ data, loading, error });
+  // console.log({ data, loading, error });
 
   if (!post) {
     return (

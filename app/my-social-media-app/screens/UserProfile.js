@@ -47,8 +47,6 @@ const FOLLOW_USER = gql`
 
 export default function UserProfile({ route }) {
   const { userId } = route.params;
-  console.log("route.params =", route.params);
-console.log("userId =", userId);
   const { currentUserId: loggedInUserId } = useContext(AuthContext);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -69,9 +67,6 @@ console.log("userId =", userId);
     skip: !userId, // Skip query if userId is not set
     fetchPolicy: "network-only",
   });
-  console.log("loading =", loading);
-console.log("error =", error);
-console.log("data =", data);
 
   useEffect(() => {
     if (data?.getUserById && currentUserId) {
@@ -91,7 +86,7 @@ console.log("data =", data);
           },
         },
       });
-      console.log("Follow user result:", result);
+      // console.log("Follow user result:", result);
       await refetch(); // Refetch to update the followers list
       Alert.alert("Success", "You are now following this user.");
     } catch (error) {
@@ -165,10 +160,10 @@ console.log("data =", data);
     );
   }
   const user = data?.getUserById;
-  console.log("USER =", user);
-console.log("currentUserId =", currentUserId);
-console.log("isOwnProfile =", isOwnProfile);
   const isOwnProfile = user?._id === currentUserId;
+  // console.log("USER =", user);
+  // console.log("currentUserId =", currentUserId);
+  // console.log("isOwnProfile =", isOwnProfile);
 
   if (!user) {
     return (

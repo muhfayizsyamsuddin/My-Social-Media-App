@@ -61,7 +61,7 @@ export default function SearchScreen() {
   });
   // console.log({ loading, error, data });
   const results = data?.searchUsers || [];
-  console.log(results, "results");
+  // console.log(results, "results");
   // if (!currentUserId) {
   //   return (
   //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>

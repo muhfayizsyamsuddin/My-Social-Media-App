@@ -53,7 +53,7 @@ export default function HomeScreen() {
     fetchPolicy: "network-only",
     skip: !isSignedIn, // Skip the query if the user is not signed in
   });
-  console.log({ loading, error, data });
+  // console.log({ loading, error, data });
   const navigation = useNavigation();
   // await refetch();
   useEffect(() => {

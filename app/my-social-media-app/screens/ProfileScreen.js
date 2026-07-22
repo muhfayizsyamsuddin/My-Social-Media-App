@@ -103,7 +103,7 @@ export default function ProfileScreen({ route, navigation }) {
   }
 
   const handleLogout = async () => {
-    console.log("Logout Pressed");
+    // console.log("Logout Pressed");
     await deleteSecure("token");
     await deleteSecure("_id");
     setIsSignedIn(false);

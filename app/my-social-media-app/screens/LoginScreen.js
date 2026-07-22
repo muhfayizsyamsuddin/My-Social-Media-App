@@ -37,7 +37,7 @@ export default function LoginScreen() {
         },
       });
       // console.log("Login result:", result);
-      console.log(result.data.login.access_token);
+      // console.log(result.data.login.access_token);
       const token = result.data?.login.access_token;
       const userId = result.data.login.userId;
       // const username = result.data?.login.username;

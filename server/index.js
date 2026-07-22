@@ -17,7 +17,7 @@ const server = new ApolloServer({
 startStandaloneServer(server, {
   listen: { port: process.env.PORT || 3000 },
   context: async ({ req }) => {
-    console.log("Authorization Header:", req.headers.authorization);
+    // console.log("Authorization Header:", req.headers.authorization);
     return {
       auth: async () => {
         const authentication = req.headers.authorization;

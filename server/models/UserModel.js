@@ -138,7 +138,7 @@ class UserModel {
     // "followerId" = user yang sedang login dan menekan tombol "Follow"
     // "followingId" = target user yang ingin dia follow
     const result = await this.collection().aggregate(agg).toArray();
-    console.log("🚀 ~ UserModel ~ getUserById ~ result:", result);
+    // console.log("🚀 ~ UserModel ~ getUserById ~ result:", result);
     return result[0];
   }
 

@@ -113,7 +113,7 @@ class PostModel {
       },
     ];
     const result = await this.collection().aggregate(agg).toArray();
-    console.log("🚀 ~ PostModel ~ getPostById ~ result:", result);
+    // console.log("🚀 ~ PostModel ~ getPostById ~ result:", result);
     return result[0];
   }
 
